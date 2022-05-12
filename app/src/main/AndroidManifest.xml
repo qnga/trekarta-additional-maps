@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.qnga.carteigntrekarta">
+
+    <application
+        android:name=".MainApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CarteIgnTrekarta">
+
+        <provider
+            android:name="org.qnga.carteigntrekarta.provider.IgnContentProvider"
+            android:authorities="carteign"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver android:name="org.qnga.carteigntrekarta.provider.InitializationReceiver"  android:exported="true">
+            <intent-filter>
+                <action android:name="mobi.maptrek.maps.online.provider.action.INITIALIZE"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.CarteIgnTrekarta">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

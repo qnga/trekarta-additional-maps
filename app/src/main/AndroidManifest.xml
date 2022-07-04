@@ -13,7 +13,7 @@
 
         <provider
             android:name="org.qnga.carteigntrekarta.provider.IgnContentProvider"
-            android:authorities="carteign"
+            android:authorities="carteign;org.qnga.ign.fr"
             android:enabled="true"
             android:exported="true" />
 

@@ -32,7 +32,7 @@ class IgnContentProvider : ContentProvider() {
             if (key == null) {
                 null
             } else {
-                val baseUrl = "https://wxs.ign.fr/$key/geoportail/wmts" //"https://www.ign.es/wmts/mapa-raster"
+                val baseUrl = "https://wxs.ign.fr/$key/geoportail/wmts"
                 WmtsTileSource(baseUrl)
             }
     }
@@ -44,23 +44,64 @@ class IgnContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor {
-        val tileSourceNow = tileSource ?: return MatrixCursor(emptyArray())
+       return when (query.pathSegments[0]) {
+           "maps" -> handleMapsQuery(query)
+           "tiles" -> handleTileQuery(query)
+           else -> MatrixCursor(emptyArray())
+       }
+    }
+
+    private fun handleMapsQuery(query: Uri): Cursor {
+        return MatrixCursor(arrayOf("name", "identifier"), 1)
+            .apply {
+                addRow(arrayOf("Cartes IGN", "ign-fr"))
+                addRow(arrayOf("Cartografía del IGN", "ign-es"))
+            }
+    }
+
+    private fun handleTileQuery(query: Uri): Cursor {
         val segments = query.pathSegments
-        val zoomLevel = segments[0]
-        val tileX = requireNotNull(segments[1].toIntOrNull())
-        val tileY = requireNotNull(segments[2].toIntOrNull())
+        val map = segments[1]
+        val zoomLevel = segments[2]
+        val tileX = requireNotNull(segments[3].toIntOrNull())
+        val tileY = requireNotNull(segments[4].toIntOrNull())
+
+        return when (map) {
+            "ign-fr" -> handleIgnFranceQuery(zoomLevel, tileX, tileY)
+            "ign-es" -> handleIgnEspagneQuery(zoomLevel, tileX, tileY)
+            else -> MatrixCursor(emptyArray())
+        }
+    }
+
+    private fun handleIgnFranceQuery(zoomLevel: String, tileX: Int, tileY: Int): Cursor {
+        val tileSourceNow = tileSource ?: return MatrixCursor(emptyArray())
 
         val description = WmtsTileSource.TileDescription(
             matrix = zoomLevel,
-            matrixSet = "PM", //"GoogleMapsCompatible"
-            style = "normal", //"default"
+            matrixSet = "PM",
+            style = "normal",
             row = tileY,
             column = tileX,
-            layer = "GEOGRAPHICALGRIDSYSTEMS.MAPS", // "MTN"
+            layer = "GEOGRAPHICALGRIDSYSTEMS.MAPS",
             format = "image/jpeg"
         )
 
         val tileUri = tileSourceNow.urlForTile(description)
+        return TileSourceCursor(tileUri)
+    }
+
+    private fun handleIgnEspagneQuery(zoomLevel: String, tileX: Int, tileY: Int): Cursor {
+        val description = WmtsTileSource.TileDescription(
+            matrix = zoomLevel,
+            matrixSet = "GoogleMapsCompatible",
+            style = "default",
+            row = tileY,
+            column = tileX,
+            layer = "MTN",
+            format = "image/jpeg"
+        )
+
+        val tileUri = WmtsTileSource("https://www.ign.es/wmts/mapa-raster").urlForTile(description)
         return TileSourceCursor(tileUri)
     }
 

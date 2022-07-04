@@ -1,4 +1,4 @@
-package org.qnga.carteigntrekarta
+package org.qnga.trekarta.maps.carteigntrekarta
 
 import org.junit.Test
 

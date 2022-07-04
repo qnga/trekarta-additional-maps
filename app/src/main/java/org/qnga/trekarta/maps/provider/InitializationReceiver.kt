@@ -1,4 +1,4 @@
-package org.qnga.carteigntrekarta.provider
+package org.qnga.trekarta.maps.provider
 
 import android.content.BroadcastReceiver
 import android.content.Context

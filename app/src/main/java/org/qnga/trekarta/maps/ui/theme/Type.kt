@@ -1,4 +1,4 @@
-package org.qnga.carteigntrekarta.ui.theme
+package org.qnga.trekarta.maps.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

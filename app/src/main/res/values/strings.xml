@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Carte IGN pour Trekarta</string>
-    <string name="authority">org.qnga.ign.fr</string>
+    <string name="app_name">Trekarta Additional Maps</string>
+    <string name="authority">org.qnga.trekarta.maps</string>
 
     <string name="IGN_key_label">"Clé de service :"</string>
     <string name="IGN_key_info_header">Vous pouvez obtenir gratuitement une clé d\'accès pour usage professionnel ou associatif auprès de l\'IGN.</string>

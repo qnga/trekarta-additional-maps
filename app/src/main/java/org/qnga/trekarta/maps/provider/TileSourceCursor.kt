@@ -1,15 +1,15 @@
-package org.qnga.carteigntrekarta.provider
+package org.qnga.trekarta.maps.provider
 
 import android.database.AbstractCursor
 
 class TileSourceCursor(private val tileUrl: String) : AbstractCursor() {
 
     override fun getCount(): Int {
-        return TileSourceProviderContract.TILE_COLUMNS.size
+        return TrekartaProviderContract.TILE_COLUMNS.size
     }
 
     override fun getColumnNames(): Array<String> {
-        return TileSourceProviderContract.TILE_COLUMNS
+        return TrekartaProviderContract.TILE_COLUMNS
     }
 
     override fun getString(column: Int): String {

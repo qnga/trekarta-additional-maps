@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Carte IGN pour Trekarta"
+rootProject.name = "Trekarta Additional Maps"
 include ':app'

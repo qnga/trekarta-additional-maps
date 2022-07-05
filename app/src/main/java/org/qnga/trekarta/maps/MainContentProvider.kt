@@ -1,4 +1,4 @@
-package org.qnga.trekarta.maps.provider
+package org.qnga.trekarta.maps
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -10,16 +10,15 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.qnga.trekarta.maps.MainApplication
-import org.qnga.trekarta.maps.catalog.TilesProvider
+import org.qnga.trekarta.maps.provider.MapProviderContract
+import org.qnga.trekarta.maps.provider.ProviderQueryHandler
 
-class TrekartaContentProvider : ContentProvider() {
+class MainContentProvider : ContentProvider() {
 
     private val coroutineScope: CoroutineScope =
         MainScope()
 
-    private var providers: Map<String, TilesProvider> =
-        emptyMap()
+    private var queryHandler: ProviderQueryHandler? = null
 
     override fun onCreate(): Boolean {
         val application =
@@ -34,8 +33,8 @@ class TrekartaContentProvider : ContentProvider() {
     }
 
     private fun onApplicationStarted(application: MainApplication) {
-        application.providerRepository.providers
-            .onEach { providers = it }
+        application.mapRepository.maps
+            .onEach { queryHandler = ProviderQueryHandler(it) }
             .launchIn(coroutineScope)
     }
 
@@ -46,42 +45,12 @@ class TrekartaContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor {
-       return when (query.pathSegments[0]) {
-           "maps" -> handleMapsQuery(query)
-           "tiles" -> handleTileQuery(query)
-           else -> MatrixCursor(emptyArray())
-       }
-    }
-
-    private fun handleMapsQuery(query: Uri): Cursor {
-        val cursor = MatrixCursor(arrayOf("name", "identifier"), 1)
-
-        val providersNow = providers
-
-        for (provider in providersNow.values) {
-            cursor.addRow(arrayOf(provider.title, provider.identifier))
-        }
-
-        return cursor
-    }
-
-    private fun handleTileQuery(query: Uri): Cursor {
-        val segments = query.pathSegments
-        val map = segments[1]
-        val zoomLevel = requireNotNull(segments[2].toIntOrNull())
-        val tileX = requireNotNull(segments[3].toIntOrNull())
-        val tileY = requireNotNull(segments[4].toIntOrNull())
-
-        val provider = providers[map]
-            ?: return MatrixCursor(emptyArray())
-
-        val tileURL = provider.tileUrl(zoomLevel, tileX, tileY)
-
-        return TileSourceCursor(tileURL)
+        return queryHandler?.query(query)
+            ?: MatrixCursor(emptyArray())
     }
 
     override fun getType(uri: Uri): String {
-        return TrekartaProviderContract.TILE_TYPE // Multiple rows are not supported
+        return MapProviderContract.TILE_TYPE // Multiple rows are not supported
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {

@@ -1,13 +1,13 @@
-package org.qnga.trekarta.maps.ui
+package org.qnga.trekarta.maps.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -22,56 +22,65 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.qnga.trekarta.maps.R
+import org.qnga.trekarta.maps.catalog.FranceIgnMapProvider
+import org.qnga.trekarta.maps.catalog.MapProvider
+
+interface ProviderDetailListener {
+
+    fun onTokenSubmitted(provider: MapProvider, token: String?)
+}
 
 @Composable
-fun KeyScreen(
-    initialKey: String,
-    onKeySubmitted: (String) -> Unit
+fun ProviderDetailScreen(
+    provider: MapProvider,
+    token: String,
+    listener: ProviderDetailListener
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
     ) {
-       KeyBox(
-           modifier = Modifier
-               .padding(20.dp)
-               .align(Alignment.Center),
-           initialKey = initialKey,
-           onKeySubmitted = onKeySubmitted
-       )
+        ProviderDetail(
+            modifier = Modifier.padding(20.dp),
+            provider = provider,
+            token = token,
+            onTokenSubmitted = { listener.onTokenSubmitted(provider, it) }
+        )
     }
 }
 
 @Composable
-fun KeyBox(
+private fun ProviderDetail(
     modifier: Modifier,
-    initialKey: String,
-    onKeySubmitted: (String) -> Unit
+    provider: MapProvider,
+    token: String,
+    onTokenSubmitted: (String) -> Unit
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(50.dp)
     ) {
-        KeyForm(
+        TokenForm(
             Modifier.padding(5.dp),
-            initialKey,
-            onKeySubmitted
+            token,
+            onTokenSubmitted
         )
-        IgnKeyInfo()
+        if(provider is FranceIgnMapProvider) {
+            IgnKeyInfo()
+        }
     }
 }
 
 @Composable
-fun KeyForm(
+private fun TokenForm(
     modifier: Modifier,
     initialKey: String,
-    onKeySubmitted: (String) -> Unit
+    onTokenSubmitted: (String) -> Unit
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         modifier = modifier
     ) {
-        val keyValue : MutableState<String?> = remember { mutableStateOf(null) }
+        val tokenValue : MutableState<String?> = remember { mutableStateOf(null) }
         Text(
             text = stringResource(R.string.IGN_key_label),
             modifier = Modifier.padding(horizontal = 5.dp)
@@ -79,13 +88,15 @@ fun KeyForm(
         val focusManager = LocalFocusManager.current
 
         TextField(
-            value = keyValue.value ?: initialKey,
-            onValueChange = { keyValue.value = it },
+            value = tokenValue.value ?: initialKey,
+            onValueChange = { tokenValue.value = it },
             singleLine = true,
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()
-                    keyValue.value?.let { onKeySubmitted(it) }
+                    tokenValue.value
+                        ?.replace("\\s".toRegex(), "")
+                        ?.let { onTokenSubmitted(it) }
                 }
             )
         )
@@ -93,7 +104,7 @@ fun KeyForm(
 }
 
 @Composable
-fun IgnKeyInfo() {
+private fun IgnKeyInfo() {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp),
         modifier = Modifier.padding(5.dp)

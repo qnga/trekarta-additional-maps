@@ -1,6 +1,6 @@
-package org.qnga.trekarta.maps.util
+package org.qnga.trekarta.maps.catalog
 
-data class WmtsMap(
+internal data class WmtsMap(
     val matrixSet: String,
 
     val layer: String,
@@ -19,10 +19,9 @@ data class WmtsMap(
             "tilematrixset" to matrixSet,
             "format" to format
         )
-
 }
 
-data class WmtsTile(
+internal data class WmtsTile(
     val zoom: Int,
     val tileX: Int,
     val tileY: Int

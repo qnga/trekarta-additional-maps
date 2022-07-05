@@ -1,10 +1,20 @@
 package org.qnga.trekarta.maps.catalog
 
-import org.qnga.trekarta.maps.util.WmtsMap
-import org.qnga.trekarta.maps.util.WmtsTile
 import java.net.URI
 
-internal class FranceIgnMap(val accessToken: String) : TilesProvider {
+object FranceIgnMapProvider : TokenAccessMapProvider {
+
+    override val identifier: String =
+        "fr.ign.maps"
+
+    override val title: String =
+        "Carte IGN de la France"
+
+    override fun createTileSource(token: String): TiledMap =
+        FranceIgnMap(token)
+}
+
+class FranceIgnMap(accessToken: String) : TiledMap {
 
     private val baseUrl: String =
         "https://wxs.ign.fr/$accessToken/geoportail/wmts"
@@ -15,12 +25,6 @@ internal class FranceIgnMap(val accessToken: String) : TilesProvider {
         format = "image/jpeg",
         style = "normal"
     ).toQueryParameters()
-
-    override val identifier: String =
-        "fr.ign.maps"
-
-    override val title: String =
-        "Carte IGN de la France"
 
     override fun tileUrl(zoom: Int, x: Int, y: Int): String {
         val tileParams = WmtsTile(

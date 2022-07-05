@@ -1,12 +1,22 @@
 package org.qnga.trekarta.maps.catalog
 
-import org.qnga.trekarta.maps.util.WmtsMap
-import org.qnga.trekarta.maps.util.WmtsTile
 import java.net.URI
 
-internal object SpainIgnMtn : TilesProvider {
+object SpainIgnMtnProvider : OpenAccessMapProvider {
 
-    private const val baseUrl: String =
+    override val identifier: String =
+        "es.ign.mtn"
+
+    override val title: String =
+        "Cartografía de España del IGN"
+
+    override fun createTileSource(): TiledMap =
+        SpainIgnMtn()
+}
+
+private class SpainIgnMtn : TiledMap {
+
+    private val baseUrl: String =
         "https://www.ign.es/wmts/mapa-raster"
 
     private val wmtsParams = WmtsMap(
@@ -15,12 +25,6 @@ internal object SpainIgnMtn : TilesProvider {
         format = "image/jpeg",
         style = "default"
     ).toQueryParameters()
-
-    override val identifier: String =
-        "es.ign.mtn"
-
-    override val title: String =
-        "Cartografía de España del IGN"
 
     override fun tileUrl(zoom: Int, x: Int, y: Int): String {
         val tileParams = WmtsTile(

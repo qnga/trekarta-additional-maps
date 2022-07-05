@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MainApplication : Application() {
 
-    lateinit var providerRepository: ProviderRepository
+    internal lateinit var mapRepository: MapRepository
 
     /*
      * This is useful because ContentProvider.onCreate is called
@@ -21,7 +21,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        providerRepository = ProviderRepository(this)
+        mapRepository = MapRepository(this)
 
         onCreateCompletedMutable.value = true
     }

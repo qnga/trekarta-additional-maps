@@ -12,12 +12,12 @@
         android:theme="@style/Theme.TrekartaAdditionalMaps">
 
         <provider
-            android:name="org.qnga.trekarta.maps.provider.TrekartaContentProvider"
+            android:name="org.qnga.trekarta.maps.MainContentProvider"
             android:authorities="org.qnga.trekarta.maps"
             android:enabled="true"
             android:exported="true" />
 
-        <receiver android:name="org.qnga.trekarta.maps.provider.InitializationReceiver"  android:exported="true">
+        <receiver android:name="org.qnga.trekarta.maps.InitializationReceiver"  android:exported="true">
             <intent-filter>
                 <action android:name="mobi.maptrek.maps.online.provider.action.INITIALIZE"/>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

@@ -26,6 +26,10 @@ internal class MainViewModel(
 
     private lateinit var tokens: Map<String, String>
 
+    private val backstack: Backstack<Screen> =
+        Backstack(Screen.Loading)
+
+
     init {
         viewModelScope.launch {
             maps = mapRepository.maps.first()
@@ -45,9 +49,6 @@ internal class MainViewModel(
             .onEach { maps = it }
             .launchIn(viewModelScope)
     }
-
-    private val backstack: Backstack<Screen> =
-        Backstack(Screen.Loading)
 
     private fun onProviderRepositoryReady(providers: List<MapProvider>) {
         val catalogScreen = Screen.ProviderCatalog(providers, this)

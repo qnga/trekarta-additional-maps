@@ -3,13 +3,14 @@ package org.qnga.trekarta.maps
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
-import android.database.MatrixCursor
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.qnga.trekarta.maps.provider.MapProviderContract
 import org.qnga.trekarta.maps.provider.ProviderQueryHandler
 
@@ -18,24 +19,24 @@ class MainContentProvider : ContentProvider() {
     private val coroutineScope: CoroutineScope =
         MainScope()
 
-    private var queryHandler: ProviderQueryHandler? = null
+    private lateinit var queryHandler: Deferred<ProviderQueryHandler>
 
     override fun onCreate(): Boolean {
         val application =
             requireNotNull(context).applicationContext as MainApplication
 
-        application.onCreatedCompleted
-            .filter { it }
-            .onEach { onApplicationStarted(application) }
-            .launchIn(coroutineScope)
+        queryHandler = coroutineScope.async {
+            application.onCreatedCompleted
+                .filter { it }
+                .first()
+
+            val maps = application.mapRepository.maps
+                .first()
+
+            ProviderQueryHandler(maps)
+        }
 
         return true
-    }
-
-    private fun onApplicationStarted(application: MainApplication) {
-        application.mapRepository.maps
-            .onEach { queryHandler = ProviderQueryHandler(it) }
-            .launchIn(coroutineScope)
     }
 
     override fun query(
@@ -44,9 +45,8 @@ class MainContentProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?,
         sortOrder: String?
-    ): Cursor {
-        return queryHandler?.query(query)
-            ?: MatrixCursor(emptyArray())
+    ): Cursor = runBlocking {
+        queryHandler.await().query(query)
     }
 
     override fun getType(uri: Uri): String {

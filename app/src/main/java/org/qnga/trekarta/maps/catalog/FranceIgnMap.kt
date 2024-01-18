@@ -26,6 +26,10 @@ class FranceIgnMap(accessToken: String) : TiledMap {
         style = "normal"
     ).toQueryParameters()
 
+    override val minZoom: Int = 0
+
+    override val maxZoom: Int = 21
+
     override fun tileUrl(zoom: Int, x: Int, y: Int): String {
         val tileParams = WmtsTile(
             zoom = zoom,

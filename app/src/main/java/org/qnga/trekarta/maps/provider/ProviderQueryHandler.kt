@@ -17,11 +17,16 @@ internal class ProviderQueryHandler(
     }
 
     private fun handleMapsQuery(): Cursor {
-        val cursor = MatrixCursor(arrayOf("name", "identifier"), 1)
+        val cursor = MatrixCursor(arrayOf("name", "identifier", "min_zoom", "max_zoom"), 1)
 
         for (map in mapHolders.values) {
             cursor.addRow(
-                arrayOf(map.provider.title, map.provider.identifier)
+                arrayOf(
+                    map.provider.title,
+                    map.provider.identifier,
+                    map.source.minZoom,
+                    map.source.maxZoom
+                )
             )
         }
 

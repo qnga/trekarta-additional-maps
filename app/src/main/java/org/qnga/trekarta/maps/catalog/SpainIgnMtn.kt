@@ -26,6 +26,10 @@ private class SpainIgnMtn : TiledMap {
         style = "default"
     ).toQueryParameters()
 
+    override val minZoom: Int = 1
+
+    override val maxZoom: Int = 20
+
     override fun tileUrl(zoom: Int, x: Int, y: Int): String {
         val tileParams = WmtsTile(
             zoom = zoom,

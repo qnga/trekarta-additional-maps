@@ -27,5 +27,9 @@ interface TokenAccessMapProvider : MapProvider {
 
 interface TiledMap {
 
+    val minZoom: Int
+
+    val maxZoom: Int
+
     fun tileUrl(zoom: Int, x: Int, y: Int): String
 }

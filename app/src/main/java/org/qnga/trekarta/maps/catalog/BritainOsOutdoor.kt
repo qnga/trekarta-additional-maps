@@ -26,6 +26,9 @@ private class BritainOsOutdoorMap(val accessToken: String) : TiledMap {
         style = "default"
     ).toQueryParameters()
 
+    override val minZoom: Int = 7
+
+    override val maxZoom: Int = 20
 
     override fun tileUrl(zoom: Int, x: Int, y: Int): String {
         val tileParams =

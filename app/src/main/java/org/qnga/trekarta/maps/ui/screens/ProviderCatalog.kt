@@ -29,9 +29,9 @@ fun ProviderCatalogScreen(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
-    ) {
+    ) { innerPadding ->
         ProviderList(
-            modifier = Modifier,
+            modifier = Modifier.padding(innerPadding),
             providers = providers,
             onProviderClicked = listener::onProviderClicked
         )

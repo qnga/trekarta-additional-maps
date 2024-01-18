@@ -38,9 +38,9 @@ fun ProviderDetailScreen(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
-    ) {
+    ) { innerPadding ->
         ProviderDetail(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(innerPadding),
             provider = provider,
             token = token,
             onTokenSubmitted = { listener.onTokenSubmitted(provider, it) }

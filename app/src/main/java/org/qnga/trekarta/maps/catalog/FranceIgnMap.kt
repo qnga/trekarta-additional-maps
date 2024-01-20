@@ -17,7 +17,7 @@ object FranceIgnMapProvider : TokenAccessMapProvider {
 class FranceIgnMap(accessToken: String) : TiledMap {
 
     private val baseUrl: String =
-        "https://wxs.ign.fr/$accessToken/geoportail/wmts"
+        "https://data.geopf.fr/private/wmts"
 
     private val wmtsParams = WmtsMap(
         matrixSet = "PM",
@@ -25,6 +25,9 @@ class FranceIgnMap(accessToken: String) : TiledMap {
         format = "image/jpeg",
         style = "normal"
     ).toQueryParameters()
+
+    val tokenParam =
+        "apikey" to "ign_scan_ws"
 
     override val minZoom: Int = 0
 
@@ -37,7 +40,7 @@ class FranceIgnMap(accessToken: String) : TiledMap {
             tileY = y
         ).toQueryParameters()
 
-        val query = (wmtsParams + tileParams)
+        val query = (wmtsParams + tileParams + tokenParam)
             .map { "${it.key}=${it.value}" }
             .joinToString("&")
 

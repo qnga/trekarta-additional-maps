@@ -3,6 +3,8 @@ package org.qnga.trekarta.maps
 import android.app.Application
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.qnga.trekarta.maps.core.data.AppDatabase
+import org.qnga.trekarta.maps.core.data.MapRepository
 
 class MainApplication : Application() {
 
@@ -21,8 +23,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        mapRepository = MapRepository(this)
-
+        mapRepository = MapRepository(AppDatabase.get(this).mapDao())
         onCreateCompletedMutable.value = true
     }
 }

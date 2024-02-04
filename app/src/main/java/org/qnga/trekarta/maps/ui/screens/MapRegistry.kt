@@ -12,54 +12,62 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.qnga.trekarta.maps.catalog.MapProvider
+import kotlinx.coroutines.flow.StateFlow
+import org.qnga.trekarta.maps.core.maps.MapProvider
+import org.qnga.trekarta.maps.ui.components.AppTopBar
 
-interface ProviderCatalogListener {
+interface MapRegistryListener {
 
     fun onProviderClicked(provider: MapProvider)
 }
 
 @Composable
-fun ProviderCatalogScreen(
-    providers: List<MapProvider>,
-    listener: ProviderCatalogListener
+fun MapRegistryScreen(
+    providers: StateFlow<List<MapProvider>>,
+    listener: MapRegistryListener
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        topBar = { AppTopBar() }
     ) { innerPadding ->
-        ProviderList(
+        MapProviderList(
             modifier = Modifier.padding(innerPadding),
-            providers = providers,
-            onProviderClicked = listener::onProviderClicked
+            providers = providers.collectAsState(),
+            onProviderActivated = listener::onProviderClicked
         )
     }
 }
 
 @Composable
-fun ProviderList(
+private fun MapProviderList(
     modifier: Modifier,
-    providers: List<MapProvider>,
-    onProviderClicked: (MapProvider) -> Unit
+    providers: State<List<MapProvider>>,
+    onProviderActivated: (MapProvider) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
     ) {
-            items(providers) {
-                ProviderItem(
-                    modifier = Modifier.fillMaxWidth(),
-                    title = it.title,
-                    onClick = { onProviderClicked(it) }
-                )
-                Divider()
-            }
+        items(
+            items = providers.value,
+            key = { it.id }
+        ) {
+            ProviderItem(
+                modifier = Modifier.fillMaxWidth(),
+                title = it.title,
+                onClick = { onProviderActivated(it) }
+            )
+            Divider()
+        }
     }
 }
 
 @Composable
-fun ProviderItem(
+private fun ProviderItem(
     modifier: Modifier,
     title: String,
     onClick: () -> Unit

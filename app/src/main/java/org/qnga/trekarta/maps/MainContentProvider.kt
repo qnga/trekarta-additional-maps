@@ -5,39 +5,46 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
-import org.qnga.trekarta.maps.provider.MapProviderContract
-import org.qnga.trekarta.maps.provider.ProviderQueryHandler
+import org.qnga.trekarta.maps.core.data.Map
+import org.qnga.trekarta.maps.core.provider.ContentProviderContract
+import org.qnga.trekarta.maps.core.provider.ContentProviderHandler
 
 class MainContentProvider : ContentProvider() {
 
     private val coroutineScope: CoroutineScope =
         MainScope()
 
-    private lateinit var queryHandler: Deferred<ProviderQueryHandler>
+    private val queryHandler: MutableSharedFlow<ContentProviderHandler> =
+        MutableSharedFlow(replay = 1)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate(): Boolean {
         val application =
             requireNotNull(context).applicationContext as MainApplication
 
-        queryHandler = coroutineScope.async {
-            application.onCreatedCompleted
-                .filter { it }
-                .first()
-
-            val maps = application.mapRepository.maps
-                .first()
-
-            ProviderQueryHandler(maps)
-        }
+        application.onCreatedCompleted
+            .filter { it }
+            .flatMapLatest { application.mapRepository.userMaps }
+            .onEach { queryHandler.emit(it.toQueryHandler()) }
+            .launchIn(coroutineScope)
 
         return true
     }
+
+    private fun List<Map>.toQueryHandler(): ContentProviderHandler = this
+        .associateBy { it.id }
+        .mapValues { it.value.createHandler() }
+        .let { ContentProviderHandler((it)) }
 
     override fun query(
         query: Uri,
@@ -46,11 +53,11 @@ class MainContentProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor = runBlocking {
-        queryHandler.await().query(query)
+        queryHandler.first().query(query)
     }
 
     override fun getType(uri: Uri): String {
-        return MapProviderContract.TILE_TYPE // Multiple rows are not supported
+        return ContentProviderContract.TILE_TYPE // Multiple rows are not supported
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {

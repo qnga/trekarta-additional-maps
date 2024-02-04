@@ -1,43 +1,74 @@
 package org.qnga.trekarta.maps.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import org.qnga.trekarta.maps.catalog.MapProvider
-import org.qnga.trekarta.maps.ui.screens.ProviderCatalogListener
-import org.qnga.trekarta.maps.ui.screens.ProviderCatalogScreen
-import org.qnga.trekarta.maps.ui.screens.ProviderDetailListener
-import org.qnga.trekarta.maps.ui.screens.ProviderDetailScreen
+import kotlinx.coroutines.flow.StateFlow
+import org.qnga.trekarta.maps.core.data.Map
+import org.qnga.trekarta.maps.core.maps.MapProvider
+import org.qnga.trekarta.maps.core.maps.MapSettings
+import org.qnga.trekarta.maps.ui.screens.LoadingScreen
+import org.qnga.trekarta.maps.ui.screens.MapRegistryListener
+import org.qnga.trekarta.maps.ui.screens.MapRegistryScreen
+import org.qnga.trekarta.maps.ui.screens.UserMapsListener
+import org.qnga.trekarta.maps.ui.screens.UserMapsScreen
+import org.qnga.trekarta.maps.ui.screens.MapDetailsListener
+import org.qnga.trekarta.maps.ui.screens.MapDetailsScreen
 
 internal sealed class Screen {
 
+  @SuppressLint("NotConstructor")
   @Composable
   abstract fun Screen()
 
   object Loading : Screen() {
 
     @Composable
-    override fun Screen() {}
-  }
-
-  class ProviderCatalog(
-    private val providers: List<MapProvider>,
-    private val listener: ProviderCatalogListener
-  ) : Screen() {
-
-    @Composable
     override fun Screen() {
-      ProviderCatalogScreen(providers, listener)
+      LoadingScreen()
     }
   }
 
-  class ProviderDetail(
-    private val provider: MapProvider,
-    private val token: String,
-    private val listener: ProviderDetailListener
+  class UserMaps(
+    private val maps: StateFlow<List<Map>>,
+    private val listener: UserMapsListener
   ) : Screen() {
 
     @Composable
     override fun Screen() {
-      ProviderDetailScreen(provider, token, listener)
+      UserMapsScreen(maps, listener)
+    }
+  }
+
+  class MapRegistry(
+    private val providers: StateFlow<List<MapProvider>>,
+    private val listener: MapRegistryListener
+  ) : Screen() {
+
+    @Composable
+    override fun Screen() {
+      MapRegistryScreen(providers, listener)
+    }
+  }
+
+  class MapDetailsForProvider(
+    private val provider: MapProvider,
+    private val listener: MapDetailsListener
+  ) : Screen() {
+
+    @Composable
+    override fun Screen() {
+      MapDetailsScreen(provider, listener)
+    }
+  }
+
+  class MapDetailsForSettings(
+    private val settings: MapSettings,
+    private val listener: MapDetailsListener
+  ) : Screen() {
+
+    @Composable
+    override fun Screen() {
+      MapDetailsScreen(settings, listener)
     }
   }
 }

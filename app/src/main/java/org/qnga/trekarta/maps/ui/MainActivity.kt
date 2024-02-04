@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import org.qnga.trekarta.maps.MainApplication
+import org.qnga.trekarta.maps.ui.theme.TrekartaAdditionalMaps
 
 
 class MainActivity : ComponentActivity() {
@@ -28,8 +29,10 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val screen by viewModel.currentScreen.collectAsState()
-            screen.Screen()
+            TrekartaAdditionalMaps {
+                val screen by viewModel.currentScreen.collectAsState()
+                screen.Screen()
+            }
         }
     }
 }

@@ -1,57 +1,37 @@
 package org.qnga.trekarta.maps.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.qnga.trekarta.maps.MapRepository
-import org.qnga.trekarta.maps.catalog.MapProvider
-import org.qnga.trekarta.maps.catalog.OpenAccessMapProvider
-import org.qnga.trekarta.maps.catalog.TokenAccessMapProvider
+import org.qnga.trekarta.maps.core.data.Map
+import org.qnga.trekarta.maps.core.data.MapRepository
+import org.qnga.trekarta.maps.core.maps.MapProvider
+import org.qnga.trekarta.maps.core.maps.MapSettings
 import org.qnga.trekarta.maps.ui.navigation.Backstack
 import org.qnga.trekarta.maps.ui.navigation.Screen
-import org.qnga.trekarta.maps.ui.screens.ProviderCatalogListener
-import org.qnga.trekarta.maps.ui.screens.ProviderDetailListener
+import org.qnga.trekarta.maps.ui.screens.MapDetailsListener
+import org.qnga.trekarta.maps.ui.screens.MapRegistryListener
+import org.qnga.trekarta.maps.ui.screens.UserMapsListener
 
 internal class MainViewModel(
     private val mapRepository: MapRepository
-) : ViewModel(), ProviderCatalogListener, ProviderDetailListener {
-
-    private lateinit var maps: Map<String, MapRepository.MapHolder>
-
-    private lateinit var tokens: Map<String, String>
+) : ViewModel(), UserMapsListener, MapDetailsListener, MapRegistryListener {
 
     private val backstack: Backstack<Screen> =
         Backstack(Screen.Loading)
 
-
     init {
         viewModelScope.launch {
-            maps = mapRepository.maps.first()
-            Log.v(MainViewModel::class.java.name, "Maps initialized")
-
-            tokens = mapRepository.tokens.first()
-            Log.v(MainViewModel::class.java.name, "Tokens initialized")
-
-            onProviderRepositoryReady(mapRepository.providers)
+            val maps = mapRepository.userMaps.stateIn(viewModelScope)
+            onMapRepositoryReady(maps)
         }
-
-        mapRepository.tokens
-            .onEach { tokens = it }
-            .launchIn(viewModelScope)
-
-        mapRepository.maps
-            .onEach { maps = it }
-            .launchIn(viewModelScope)
     }
 
-    private fun onProviderRepositoryReady(providers: List<MapProvider>) {
-        val catalogScreen = Screen.ProviderCatalog(providers, this)
+    private fun onMapRepositoryReady(maps: StateFlow<List<Map>>) {
+        val catalogScreen = Screen.UserMaps(maps, this)
         backstack.replace(catalogScreen)
     }
 
@@ -71,27 +51,41 @@ internal class MainViewModel(
     private fun onCloseActivity() {}
 
 
+    override fun onMapActivated(map: Map) {
+        val detailsScreen = Screen.MapDetailsForSettings(map.settings, this)
+        backstack.add(detailsScreen)
+    }
+
+    override fun onDetailsValidated(settings: MapSettings) {
+        mapRepository.replaceMap(settings)
+        backstack.pop()
+        backstack.pop()
+    }
+
+    override fun onDetailsDismissed() {
+        backstack.pop()
+        backstack.pop()
+    }
+
     override fun onProviderClicked(provider: MapProvider) {
-        return when (provider) {
-            is OpenAccessMapProvider -> {
-                // Do nothing
-            }
-            is TokenAccessMapProvider -> {
-                val token = tokens[provider.identifier].orEmpty()
-                val detailScreen = Screen.ProviderDetail(provider, token, this)
-                backstack.add(detailScreen)
-            }
+        val settingsScreen = Screen.MapDetailsForProvider(provider, this)
+        backstack.add(settingsScreen)
+    }
+
+    override fun onAddMap() {
+        viewModelScope.launch {
+            val providers = mapRepository.unusedProviders.stateIn(viewModelScope)
+            val registryScreen = Screen.MapRegistry(providers, this@MainViewModel)
+            backstack.add(registryScreen)
         }
     }
 
-    override fun onTokenSubmitted(provider: MapProvider, token: String?) {
-        mapRepository.setAccessToken(provider.identifier, token)
-    }
 
     class Factory(
         private val mapRepository: MapRepository
     ): ViewModelProvider.NewInstanceFactory() {
 
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return when {
                 modelClass.isAssignableFrom(MainViewModel::class.java) ->

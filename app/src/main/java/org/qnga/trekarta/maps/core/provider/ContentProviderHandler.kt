@@ -1,12 +1,12 @@
-package org.qnga.trekarta.maps.provider
+package org.qnga.trekarta.maps.core.provider
 
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
-import org.qnga.trekarta.maps.MapRepository
+import org.qnga.trekarta.maps.core.handlers.Handler
 
-internal class ProviderQueryHandler(
-    private val mapHolders: Map<String, MapRepository.MapHolder>
+class ContentProviderHandler(
+    private val handlers: Map<String, Handler>
 ) {
     fun query(query: Uri): Cursor {
         return when (query.pathSegments[0]) {
@@ -17,15 +17,15 @@ internal class ProviderQueryHandler(
     }
 
     private fun handleMapsQuery(): Cursor {
-        val cursor = MatrixCursor(arrayOf("name", "identifier", "min_zoom", "max_zoom"), 1)
+        val cursor = MatrixCursor(ContentProviderContract.MAPS_COLUMNS, 1)
 
-        for (map in mapHolders.values) {
+        for (map in handlers.values) {
             cursor.addRow(
                 arrayOf(
-                    map.provider.title,
-                    map.provider.identifier,
-                    map.source.minZoom,
-                    map.source.maxZoom
+                    map.title,
+                    map.id,
+                    map.minZoom,
+                    map.maxZoom
                 )
             )
         }
@@ -40,11 +40,11 @@ internal class ProviderQueryHandler(
         val tileX = requireNotNull(segments[3].toIntOrNull())
         val tileY = requireNotNull(segments[4].toIntOrNull())
 
-        val map = mapHolders[mapId]
+        val map = handlers[mapId]
             ?: return MatrixCursor(emptyArray())
 
-        val tileURL = map.source.tileUrl(zoomLevel, tileX, tileY)
+        val tileURL = map.tile(zoomLevel, tileX, tileY)
 
-        return MapCursor(tileURL)
+        return TileCursor(tileURL)
     }
 }

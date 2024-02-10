@@ -144,9 +144,10 @@ class MapRepository(
         }
     }
 
-    fun removeMap(id: String) {
+    fun removeMap(settings: MapSettings) {
         coroutineScope.launch {
-            mapDao.get(id)?.let { mapDao.delete(it) }
+            val mapEntity = settings.toMapEntity()
+            mapDao.delete(mapEntity)
         }
     }
 

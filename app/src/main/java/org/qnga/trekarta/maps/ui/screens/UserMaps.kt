@@ -12,8 +12,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -24,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.StateFlow
 import org.qnga.trekarta.maps.core.data.Map
-import org.qnga.trekarta.maps.ui.components.AppTopBar
+import org.qnga.trekarta.maps.ui.components.AppNameTitle
 
 interface UserMapsListener {
 
@@ -40,11 +42,14 @@ fun UserMapsScreen(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { AppTopBar() },
+        topBar = {
+            TopAppBar(title = { AppNameTitle() })
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { listener.onAddMap() },
-                shape = CircleShape
+                shape = CircleShape,
+                backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(Icons.Filled.Add, "Add a map")
             }

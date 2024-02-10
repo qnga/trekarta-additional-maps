@@ -18,7 +18,7 @@ import org.qnga.trekarta.maps.ui.screens.UserMapsListener
 
 internal class MainViewModel(
     private val mapRepository: MapRepository
-) : ViewModel(), UserMapsListener, MapDetailsListener, MapRegistryListener {
+) : ViewModel() {
 
     private val backstack: Backstack<Screen> =
         Backstack(Screen.Loading)
@@ -31,7 +31,7 @@ internal class MainViewModel(
     }
 
     private fun onMapRepositoryReady(maps: StateFlow<List<Map>>) {
-        val catalogScreen = Screen.UserMaps(maps, this)
+        val catalogScreen = Screen.UserMaps(maps, userMapsListener)
         backstack.replace(catalogScreen)
     }
 
@@ -50,36 +50,50 @@ internal class MainViewModel(
 
     private fun onCloseActivity() {}
 
+    private val userMapsListener: UserMapsListener = object : UserMapsListener {
 
-    override fun onMapActivated(map: Map) {
-        val detailsScreen = Screen.MapDetailsForSettings(map.settings, this)
-        backstack.add(detailsScreen)
-    }
+        override fun onMapActivated(map: Map) {
+            val detailsScreen = Screen.MapDetails(map.settings, mapDetailsListener)
+            backstack.add(detailsScreen)
+        }
 
-    override fun onDetailsValidated(settings: MapSettings) {
-        mapRepository.replaceMap(settings)
-        backstack.pop()
-        backstack.pop()
-    }
-
-    override fun onDetailsDismissed() {
-        backstack.pop()
-        backstack.pop()
-    }
-
-    override fun onProviderClicked(provider: MapProvider) {
-        val settingsScreen = Screen.MapDetailsForProvider(provider, this)
-        backstack.add(settingsScreen)
-    }
-
-    override fun onAddMap() {
-        viewModelScope.launch {
-            val providers = mapRepository.unusedProviders.stateIn(viewModelScope)
-            val registryScreen = Screen.MapRegistry(providers, this@MainViewModel)
-            backstack.add(registryScreen)
+        override fun onAddMap() {
+            viewModelScope.launch {
+                val providers = mapRepository.unusedProviders.stateIn(viewModelScope)
+                val registryScreen = Screen.MapRegistry(providers, mapRegistryListener)
+                backstack.add(registryScreen)
+            }
         }
     }
 
+    private val mapRegistryListener: MapRegistryListener = object : MapRegistryListener {
+
+        override fun onProviderClicked(provider: MapProvider) {
+            val settingsScreen = Screen.MapDetails(provider, mapDetailsListener)
+            backstack.add(settingsScreen)
+        }
+
+        override fun onBackClicked() {
+            backstack.pop()
+        }
+    }
+
+    private val mapDetailsListener = object : MapDetailsListener {
+        override fun onDoneClicked(settings: MapSettings) {
+            mapRepository.replaceMap(settings)
+            backstack.pop()
+            backstack.pop()
+        }
+
+        override fun onDeleteClicked(settings: MapSettings) {
+            mapRepository.removeMap(settings)
+            backstack.pop()
+        }
+
+        override fun onBackClicked() {
+            backstack.pop()
+        }
+    }
 
     class Factory(
         private val mapRepository: MapRepository

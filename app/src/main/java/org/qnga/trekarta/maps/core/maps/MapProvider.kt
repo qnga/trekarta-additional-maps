@@ -2,7 +2,7 @@ package org.qnga.trekarta.maps.core.maps
 
 import kotlinx.serialization.Serializable
 
-interface MapProvider {
+sealed interface MapProvider {
 
     val id: String
 

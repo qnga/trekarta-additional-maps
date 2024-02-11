@@ -4,13 +4,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.qnga.trekarta.maps.core.maps.MapSettings
 import org.qnga.trekarta.maps.ui.components.BackButton
+import org.qnga.trekarta.maps.ui.components.CloseButton
 import org.qnga.trekarta.maps.ui.components.DeleteButton
 import org.qnga.trekarta.maps.ui.components.DoneButton
 import org.qnga.trekarta.maps.ui.components.TopBarTitle
@@ -31,31 +38,78 @@ fun MapDetailsScreen(
     settingsEditor: MapSettingsEditor,
     listener: MapDetailsListener
 ) {
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (settingsEditor.initialSettings == null ||
-                settingsEditor.currentSettings.value != settingsEditor.initialSettings) {
-                MapDetailsEditTopBar(
-                    isAdding = settingsEditor.initialSettings == null,
-                    doneEnabled = settingsEditor.currentSettings.value != null,
-                    onDoneClicked = {
-                        listener.onDoneClicked(
-                            checkNotNull(settingsEditor.currentSettings.value)
+            when {
+                settingsEditor.initialSettings == null -> {
+                    val showAbandonAlert = remember { mutableStateOf(false) }
+
+                    if (showAbandonAlert.value) {
+                        ConfirmAbandonDialog(
+                            onConfirmation = {
+                                listener.onBackClicked()
+                                showAbandonAlert.value = false
+                            },
+                            onCancel = { showAbandonAlert.value = false }
                         )
-                    },
-                    onBackClicked = { listener.onBackClicked() }
-                )
-            } else {
-                MapDetailsViewTopBar(
-                    onDeleteClicked = {
-                        listener.onDeleteClicked(
-                            checkNotNull(settingsEditor.initialSettings)
+                    }
+
+                    MapDetailsAddTopBar(
+                        doneEnabled = settingsEditor.currentSettings.value != null,
+                        onDoneClicked = {
+                            listener.onDoneClicked(
+                                checkNotNull(settingsEditor.currentSettings.value)
+                            )
+                        },
+                        onBackClicked = { showAbandonAlert.value = true }
+                    )
+                }
+                settingsEditor.currentSettings.value == settingsEditor.initialSettings -> {
+                    val showRemoveDialog = remember { mutableStateOf(false) }
+
+                    if (showRemoveDialog.value) {
+                        ConfirmRemoveDialog(
+                            onConfirmation = {
+                                listener.onDeleteClicked(
+                                    checkNotNull(settingsEditor.initialSettings)
+                                )
+                                showRemoveDialog.value = false
+                            },
+                            onCancel = { showRemoveDialog.value = false }
                         )
-                    },
-                    onBackClicked = { listener.onBackClicked() }
-                )
+                    }
+
+                    MapDetailsViewTopBar(
+                        onDeleteClicked = {
+                            showRemoveDialog.value = true
+                        },
+                        onBackClicked = { listener.onBackClicked() }
+                    )
+                }
+                else -> {
+                    val showDiscardChangesDialog = remember { mutableStateOf(false) }
+
+                    if (showDiscardChangesDialog.value) {
+                        ConfirmDiscardChangesDialog(
+                            onConfirmation = {
+                                settingsEditor.reset()
+                                showDiscardChangesDialog.value = false
+                            },
+                            onCancel = { showDiscardChangesDialog.value = false }
+                        )
+                    }
+
+                    MapDetailsEditTopBar(
+                        doneEnabled = settingsEditor.currentSettings.value != null,
+                        onDoneClicked = {
+                            listener.onDoneClicked(
+                                checkNotNull(settingsEditor.currentSettings.value)
+                            )
+                        },
+                        onCloseClicked = { showDiscardChangesDialog.value = true }
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -84,33 +138,131 @@ private fun MapDetailsBox(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MapDetailsViewTopBar(
     onDeleteClicked: () -> Unit,
     onBackClicked: () -> Unit
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = { TopBarTitle(text = "Edit map") },
         navigationIcon = { BackButton(onClick = onBackClicked) },
-        actions = { DeleteButton(onClick = onDeleteClicked) }
+        actions = {
+            DeleteButton(onClick = onDeleteClicked)
+        }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MapDetailsEditTopBar(
-    isAdding: Boolean,
     doneEnabled: Boolean,
     onDoneClicked: () -> Unit,
-    onBackClicked: () -> Unit
+    onCloseClicked: () -> Unit
 ) {
-    TopAppBar(
-        title = { TopBarTitle(text = if (isAdding) "Add map" else "Edit map") },
-        navigationIcon = { BackButton(onClick = onBackClicked) },
+    CenterAlignedTopAppBar(
+        title = { TopBarTitle(text = "Edit map") },
+        navigationIcon = {
+            CloseButton(onClick = onCloseClicked)
+                         },
         actions = {
             DoneButton(
                 enabled = doneEnabled,
                 onClick = onDoneClicked,
             )
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MapDetailsAddTopBar(
+    doneEnabled: Boolean,
+    onDoneClicked: () -> Unit,
+    onBackClicked: () -> Unit
+) {
+    CenterAlignedTopAppBar(
+        title = { TopBarTitle(text = "Add map") },
+        navigationIcon = {
+            BackButton(onClick = onBackClicked)
+        },
+        actions = {
+            DoneButton(
+                enabled = doneEnabled,
+                onClick = onDoneClicked,
+            )
+        }
+    )
+}
+
+@Composable
+private fun ConfirmDialog(
+    title: String,
+    body: String,
+    confirmText: String = "Confirm",
+    cancelText: String = "Cancel",
+    onConfirmation: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    AlertDialog(
+        title = { Text(text = title) },
+        text = { Text(text = body) },
+        onDismissRequest = onCancel,
+        confirmButton = {
+            TextButton(
+                onClick = onConfirmation
+            ) {
+               Text(text = confirmText)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onCancel
+            ) {
+                Text(cancelText)
+            }
+        }
+    )
+}
+
+@Composable
+private fun ConfirmRemoveDialog(
+    onConfirmation: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    ConfirmDialog(
+        title = "Remove map?",
+        body = "Settings will be lost.",
+        confirmText = "Remove",
+        onConfirmation = onConfirmation,
+        onCancel = onCancel
+    )
+}
+
+@Composable
+private fun ConfirmDiscardChangesDialog(
+    onConfirmation: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    ConfirmDialog(
+        title = "Discard changes?",
+        body = "Settings will be restored to their last saved state.",
+        confirmText = "Discard",
+        onConfirmation = onConfirmation,
+        onCancel = onCancel
+    )
+}
+
+@Composable
+private fun ConfirmAbandonDialog(
+    onConfirmation: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    ConfirmDialog(
+        title = "Abandon?",
+        body = "The map will not be added.",
+        confirmText = "Abandon",
+        onConfirmation = onConfirmation,
+        onCancel = onCancel
     )
 }

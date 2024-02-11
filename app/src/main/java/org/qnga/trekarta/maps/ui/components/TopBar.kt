@@ -1,10 +1,11 @@
 package org.qnga.trekarta.maps.ui.components
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
@@ -69,6 +70,22 @@ fun DeleteButton(
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = "Delete"
+        )
+    }
+}
+
+@Composable
+fun CloseButton(
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    IconButton(
+        enabled = enabled,
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = "Close"
         )
     }
 }

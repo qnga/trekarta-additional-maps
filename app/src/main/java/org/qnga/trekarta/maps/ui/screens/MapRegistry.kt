@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -32,6 +34,7 @@ interface MapRegistryListener {
     fun onBackClicked()
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapRegistryScreen(
     providers: StateFlow<List<MapProvider>>,
@@ -40,22 +43,14 @@ fun MapRegistryScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { TopBarTitle("Add map from registry") },
+            CenterAlignedTopAppBar(
+                title = { TopBarTitle("Choose map") },
                 navigationIcon = { BackButton(onClick = { listener.onBackClicked() }) }
             )
         }
     ) { innerPadding ->
         Column {
-            Text(
-                modifier = Modifier
-                    .padding(15.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = "Please select a map"
-            )
-
-            Divider(thickness = 3.dp)
+            HorizontalDivider(thickness = 3.dp)
 
             MapProviderList(
                 modifier = Modifier.padding(innerPadding),
@@ -84,7 +79,7 @@ private fun MapProviderList(
                 title = it.title,
                 onClick = { onProviderActivated(it) }
             )
-            Divider()
+            HorizontalDivider()
         }
     }
 }

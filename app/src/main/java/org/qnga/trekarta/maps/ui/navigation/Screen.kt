@@ -73,10 +73,13 @@ internal sealed class Screen {
       settingsEditor = when (mapProvider) {
         is FranceIgnScan25Provider ->
           FranceIgnScan25SettingsEditor()
+
         is SpainIgnMtnProvider ->
           SpainIgnMtnSettingsEditor()
+
         is BritainOsOutdoorProvider ->
           BritainOsOutdoorSettingsEditor()
+
         is BritainOsRoadProvider ->
           BritainOsRoadSettingsEditor()
       },
@@ -90,12 +93,16 @@ internal sealed class Screen {
       settingsEditor = when (mapSettings) {
         is FranceIgnScan25Provider.Settings ->
           FranceIgnScan25SettingsEditor(mapSettings)
+
         is SpainIgnMtnProvider.Settings ->
           SpainIgnMtnSettingsEditor(mapSettings)
+
         is BritainOsOutdoorProvider.Settings ->
           BritainOsOutdoorSettingsEditor(mapSettings)
+
         is BritainOsRoadProvider.Settings ->
           BritainOsRoadSettingsEditor(mapSettings)
+
         is CustomWmtsKvpSettings ->
           CustomWmtsKvpSettingsEditor(mapSettings)
       },

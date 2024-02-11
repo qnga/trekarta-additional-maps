@@ -25,14 +25,18 @@ class FranceIgnScan25SettingsEditor(
     override val initialSettings: FranceIgnScan25Provider.Settings? = null
 ) : MapSettingsEditor {
 
-    val token: MutableState<String?> =
-        mutableStateOf(initialSettings?.accessToken)
+    val token: MutableState<String> =
+        mutableStateOf(initialSettings?.accessToken.orEmpty())
 
     override val currentSettings: State<MapSettings?> =
-        derivedStateOf { token.value?.let { FranceIgnScan25Provider.Settings(it) } }
+        derivedStateOf {
+            token.value
+                .takeUnless { it.isBlank() }
+                ?.let { FranceIgnScan25Provider.Settings(it) }
+        }
 
     override fun reset() {
-        token.value = initialSettings?.accessToken
+        token.value = initialSettings?.accessToken.orEmpty()
     }
 }
 
@@ -55,13 +59,17 @@ class BritainOsOutdoorSettingsEditor(
     override val initialSettings: BritainOsOutdoorProvider.Settings? = null
 ) : MapSettingsEditor {
 
-    val token: MutableState<String?> = mutableStateOf(initialSettings?.accessToken)
+    val token: MutableState<String> = mutableStateOf(initialSettings?.accessToken.orEmpty())
 
     override val currentSettings: State<MapSettings?> =
-        derivedStateOf { token.value?.let { BritainOsOutdoorProvider.Settings(it) } }
+        derivedStateOf {
+            token.value
+                .takeUnless { it.isBlank() }
+                ?.let { BritainOsOutdoorProvider.Settings(it) }
+        }
 
     override fun reset() {
-        token.value = initialSettings?.accessToken
+        token.value = initialSettings?.accessToken.orEmpty()
     }
 }
 
@@ -69,13 +77,17 @@ class BritainOsRoadSettingsEditor(
     override val initialSettings: BritainOsRoadProvider.Settings? = null
 ) : MapSettingsEditor {
 
-    val token: MutableState<String?> = mutableStateOf(initialSettings?.accessToken)
+    val token: MutableState<String> = mutableStateOf(initialSettings?.accessToken.orEmpty())
 
     override val currentSettings: State<MapSettings?> =
-        derivedStateOf { token.value?.let { BritainOsRoadProvider.Settings(it) } }
+        derivedStateOf {
+            token.value
+                .takeUnless { it.isBlank() }
+                ?.let { BritainOsRoadProvider.Settings(it) }
+        }
 
     override fun reset() {
-        token.value = initialSettings?.accessToken
+        token.value = initialSettings?.accessToken.orEmpty()
     }
 }
 
@@ -83,30 +95,80 @@ class CustomWmtsKvpSettingsEditor(
     override val initialSettings: CustomWmtsKvpSettings? = null
 ) : MapSettingsEditor {
 
-    private val id: String = initialSettings?.id ?: UUID.randomUUID().toString()
-    val title: MutableState<String?> = mutableStateOf(initialSettings?.title)
-    val provider: MutableState<String?> = mutableStateOf(initialSettings?.provider)
-    val minZoom: MutableState<Int?> = mutableStateOf(initialSettings?.minZoom)
-    val maxZoom: MutableState<Int?> = mutableStateOf(initialSettings?.maxZoom)
-    val serviceUrl: MutableState<String?> = mutableStateOf(initialSettings?.serviceUrl)
-    val matrixSet: MutableState<String?> = mutableStateOf(initialSettings?.matrixSet)
-    val layer: MutableState<String?> = mutableStateOf(initialSettings?.layer)
-    val format: MutableState<String?> = mutableStateOf(initialSettings?.format)
-    val style: MutableState<String?> = mutableStateOf(initialSettings?.style)
-    val otherParams: MutableState<Map<String, String>> = mutableStateOf(initialSettings?.otherParams.orEmpty().toMap())
+    val id: String =
+        initialSettings?.id ?: UUID.randomUUID().toString()
+
+    val title: MutableState<String> =
+        mutableStateOf(initialSettings?.title.orEmpty())
+
+    val provider: MutableState<String> =
+        mutableStateOf(initialSettings?.provider.orEmpty())
+
+    val minZoom: MutableState<String> =
+        mutableStateOf(initialSettings?.minZoom?.toString().orEmpty())
+
+    val maxZoom: MutableState<String> =
+        mutableStateOf(initialSettings?.maxZoom?.toString().orEmpty())
+
+    val serviceUrl: MutableState<String> =
+        mutableStateOf(initialSettings?.serviceUrl.orEmpty())
+
+    val matrixSet: MutableState<String> =
+        mutableStateOf(initialSettings?.matrixSet.orEmpty())
+
+    val layer: MutableState<String> =
+        mutableStateOf(initialSettings?.layer.orEmpty())
+
+    val format: MutableState<String> =
+        mutableStateOf(initialSettings?.format.orEmpty())
+
+    val style: MutableState<String> =
+        mutableStateOf(initialSettings?.style.orEmpty())
+
+    val otherParams: MutableState<List<Pair<String, String>>> =
+        mutableStateOf(initialSettings?.otherParams.orEmpty())
 
     override val currentSettings: State<MapSettings?> =
         derivedStateOf {
-            val title = title.value ?: return@derivedStateOf null
-            val provider = provider.value ?: return@derivedStateOf null
-            val minZoom = minZoom.value ?: return@derivedStateOf null
-            val maxZoom = maxZoom.value ?: return@derivedStateOf null
-            val serviceUrl = serviceUrl.value ?: return@derivedStateOf null
-            val matrixSet = matrixSet.value ?: return@derivedStateOf null
-            val layer = layer.value ?: return@derivedStateOf null
-            val format = format.value ?: return@derivedStateOf null
-            val style = style.value ?: return@derivedStateOf null
-            val otherParams = otherParams.value.toList()
+            val title = title.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val provider = provider.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val minZoom = minZoom.value
+                .toIntOrNull()
+                ?: return@derivedStateOf null
+
+            val maxZoom = maxZoom.value
+                .toIntOrNull()
+                ?: return@derivedStateOf null
+
+            val serviceUrl = serviceUrl.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val matrixSet = matrixSet.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val layer = layer.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val format = format.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val style = style.value
+                .takeUnless { it.isBlank() }
+                ?: return@derivedStateOf null
+
+            val otherParams = otherParams.value
+                .takeIf { it.all { item -> item.first.isNotBlank() && item.second.isNotBlank() } }
+                ?: return@derivedStateOf null
 
             CustomWmtsKvpSettings(
                 id = id,
@@ -124,15 +186,15 @@ class CustomWmtsKvpSettingsEditor(
         }
 
     override fun reset() {
-        title.value = initialSettings?.title
-        provider.value = initialSettings?.provider
-        minZoom.value = initialSettings?.minZoom
-        maxZoom.value = initialSettings?.maxZoom
-        serviceUrl.value = initialSettings?.serviceUrl
-        matrixSet.value = initialSettings?.matrixSet
-        layer.value = initialSettings?.layer
-        format.value = initialSettings?.format
-        style.value = initialSettings?.style
-        otherParams.value = initialSettings?.otherParams.orEmpty().toMap()
+        title.value = initialSettings?.title.orEmpty()
+        provider.value = initialSettings?.provider.orEmpty()
+        minZoom.value = initialSettings?.minZoom?.toString().orEmpty()
+        maxZoom.value = initialSettings?.maxZoom?.toString().orEmpty()
+        serviceUrl.value = initialSettings?.serviceUrl.orEmpty()
+        matrixSet.value = initialSettings?.matrixSet.orEmpty()
+        layer.value = initialSettings?.layer.orEmpty()
+        format.value = initialSettings?.format.orEmpty()
+        style.value = initialSettings?.style.orEmpty()
+        otherParams.value = initialSettings?.otherParams.orEmpty()
     }
 }

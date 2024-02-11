@@ -35,7 +35,8 @@ fun MapDetailsForm(
             BritainOsRoadDetailsForm(settingsEditor)
         is BritainOsOutdoorSettingsEditor ->
             BritainOsOutdoorDetailsForm(settingsEditor)
-        is CustomWmtsKvpSettingsEditor -> {}
+        is CustomWmtsKvpSettingsEditor ->
+            CustomWmtsKvpDetailsForm(settingsEditor)
     }
 }
 
@@ -75,22 +76,22 @@ private fun BritainOsRoadDetailsForm(
 
 @Composable
 private fun AuthenticatedProviderForm(
-    token: MutableState<String?>,
+    token: MutableState<String>,
     providerDetails: @Composable () -> Unit
 ) {
    AuthenticatedProviderForm(
        token = token.value,
        providerDetails = providerDetails,
-       onTokenAvailable = { token.value = it }
+       onTokenChanged = { token.value = it }
    )
 }
 
 
 @Composable
 private fun AuthenticatedProviderForm(
-    token: String?,
+    token: String,
     providerDetails: @Composable () -> Unit,
-    onTokenAvailable: (String?) -> Unit
+    onTokenChanged: (String) -> Unit
 ) {
 
     Column(
@@ -99,7 +100,7 @@ private fun AuthenticatedProviderForm(
         TokenForm(
             modifier = Modifier.padding(5.dp),
             token = token,
-            onTokenChanged = onTokenAvailable
+            onTokenChanged = onTokenChanged
         )
 
         providerDetails()
@@ -109,8 +110,8 @@ private fun AuthenticatedProviderForm(
 @Composable
 private fun TokenForm(
     modifier: Modifier,
-    token: String?,
-    onTokenChanged: (String?) -> Unit
+    token: String,
+    onTokenChanged: (String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.Top,
@@ -125,12 +126,12 @@ private fun TokenForm(
 
         TextField(
             modifier = Modifier.onFocusChanged { if (it.isFocused) showErrors.value = true },
-            value = token.orEmpty(),
+            value = token,
             onValueChange = {
-                onTokenChanged(it.takeUnless { it.isBlank() })
+                onTokenChanged(it)
             },
             singleLine = true,
-            isError = showErrors.value && token.orEmpty().isBlank(),
+            isError = showErrors.value && token.isBlank(),
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()

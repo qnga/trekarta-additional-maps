@@ -10,6 +10,7 @@ import org.qnga.trekarta.maps.core.data.Map
 import org.qnga.trekarta.maps.core.data.MapRepository
 import org.qnga.trekarta.maps.core.maps.MapProvider
 import org.qnga.trekarta.maps.core.maps.MapSettings
+import org.qnga.trekarta.maps.ui.maps.CustomWmtsKvpSettingsEditor
 import org.qnga.trekarta.maps.ui.navigation.Backstack
 import org.qnga.trekarta.maps.ui.navigation.Screen
 import org.qnga.trekarta.maps.ui.screens.MapDetailsListener
@@ -57,12 +58,17 @@ internal class MainViewModel(
             backstack.add(detailsScreen)
         }
 
-        override fun onAddMap() {
+        override fun onMapRegistrySelected() {
             viewModelScope.launch {
                 val providers = mapRepository.unusedProviders.stateIn(viewModelScope)
                 val registryScreen = Screen.MapRegistry(providers, mapRegistryListener)
                 backstack.add(registryScreen)
             }
+        }
+
+        override fun onCustomMapSelected() {
+            val customMapScreen = Screen.MapDetails(CustomWmtsKvpSettingsEditor(), mapDetailsListener)
+            backstack.add(customMapScreen)
         }
     }
 

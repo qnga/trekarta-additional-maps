@@ -1,7 +1,11 @@
 package org.qnga.trekarta.maps.ui.screens
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,19 +15,27 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.flow.StateFlow
 import org.qnga.trekarta.maps.core.data.Map
 import org.qnga.trekarta.maps.ui.components.TopBarTitle
@@ -32,7 +44,9 @@ interface UserMapsListener {
 
     fun onMapActivated(map: Map)
 
-    fun onAddMap()
+    fun onMapRegistrySelected()
+
+    fun onCustomMapSelected()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,10 +61,27 @@ fun UserMapsScreen(
             CenterAlignedTopAppBar(title = { TopBarTitle(text = "Active maps") })
         },
         floatingActionButton = {
+            val showDialog = remember { mutableStateOf(false) }
+
+            if (showDialog.value) {
+                SelectMapSourceDialog(
+                    onRegistrySelected = {
+                        showDialog.value = false
+                        listener.onMapRegistrySelected()
+                    },
+                    onCustomMapSelected = {
+                        showDialog.value = false
+                        listener.onCustomMapSelected()
+                    },
+                    onDismiss = {
+                        showDialog.value = false
+                    }
+                )
+            }
+
             FloatingActionButton(
-                onClick = { listener.onAddMap() },
-                shape = CircleShape,
-                //backgroundColor = MaterialTheme.colors.primary
+                onClick = { showDialog.value = true },
+                shape = CircleShape
             ) {
                 Icon(Icons.Filled.Add, "Add a map")
             }
@@ -101,5 +132,38 @@ private fun ProviderItem(
         contentAlignment = Alignment.CenterStart
     ) {
         Text(title)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SelectMapSourceDialog(
+    onRegistrySelected: () -> Unit,
+    onCustomMapSelected: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    BasicAlertDialog(
+        onDismissRequest = onDismiss
+    ) {
+        Surface(
+            modifier = Modifier.padding(PaddingValues(all = 24.dp)),
+            shape = AlertDialogDefaults.shape,
+            color = AlertDialogDefaults.containerColor,
+            tonalElevation = AlertDialogDefaults.TonalElevation,
+        ) {
+            Column(
+                modifier = Modifier.padding(vertical = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(25.dp)
+            ) {
+                Button(onClick = onRegistrySelected) {
+                    Text(text = "Add from the registry")
+                }
+
+                TextButton(onClick = onCustomMapSelected) {
+                    Text("Add a custom map")
+                }
+            }
+        }
     }
 }

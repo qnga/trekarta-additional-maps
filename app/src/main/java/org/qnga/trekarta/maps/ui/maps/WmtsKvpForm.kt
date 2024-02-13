@@ -2,7 +2,6 @@ package org.qnga.trekarta.maps.ui.maps
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.qnga.trekarta.maps.ui.components.FormRow
 import org.qnga.trekarta.maps.ui.components.FormSection
-
 
 @Composable
 fun CustomWmtsKvpDetailsForm(
@@ -48,9 +47,7 @@ fun CustomWmtsKvpDetailsForm(
                 label = { Text(text = "Provider") }
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            FormRow {
 
                 OutlinedTextField(
                     modifier = Modifier.weight(1f),
@@ -77,9 +74,7 @@ fun CustomWmtsKvpDetailsForm(
                 label = { Text(text = "Service URL") }
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+            FormRow {
 
                 OutlinedTextField(
                     modifier = Modifier.weight(1f),
@@ -96,9 +91,7 @@ fun CustomWmtsKvpDetailsForm(
                 )
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+            FormRow {
                 OutlinedTextField(
                     modifier = Modifier.weight(1f),
                     value = settingsEditor.style.value,
@@ -118,7 +111,7 @@ fun CustomWmtsKvpDetailsForm(
         FormSection(
             title = "Additional parameters",
             isLastOne = true,
-            trailingIcon = {
+            afterTitle = {
                 OutlinedIconButton(
                     modifier = Modifier
                         .size(20.dp),
@@ -135,9 +128,7 @@ fun CustomWmtsKvpDetailsForm(
             }
         ) {
             settingsEditor.otherParams.value.forEachIndexed { index, (key, value) ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
+                FormRow {
                     OutlinedTextField(
                         modifier = Modifier.weight(1f),
                         value = key,

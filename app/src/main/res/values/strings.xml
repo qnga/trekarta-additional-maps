@@ -1,10 +1,4 @@
 <resources>
     <string name="app_name">Trekarta Additional Maps</string>
     <string name="authority">org.qnga.trekarta.maps</string>
-
-    <string name="IGN_key_label">"Clé de service :"</string>
-    <string name="IGN_key_info_header">Vous pouvez obtenir gratuitement une clé d\'accès pour usage professionnel ou associatif auprès de l\'IGN.</string>
-    <string name="IGN_key_step1">- Créez un compte sur geoservices.ign.fr si vous n\'en avez pas déjà un.</string>
-    <string name="IGN_key_step2">- Dans \"Mes clés de service web\", créez une clé d\'usage des SCAN 25/100/OACI.</string>
-
 </resources>

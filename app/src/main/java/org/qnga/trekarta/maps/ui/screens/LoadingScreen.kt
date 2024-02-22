@@ -2,7 +2,7 @@ package org.qnga.trekarta.maps.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,7 +17,7 @@ fun LoadingScreen() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier
-                .width(64.dp)
+                .size(72.dp)
                 .align(Alignment.Center)
             ,
             color = MaterialTheme.colorScheme.secondary

@@ -17,6 +17,8 @@ import org.qnga.trekarta.maps.ui.maps.CustomWmtsKvpSettingsEditor
 import org.qnga.trekarta.maps.ui.maps.FranceIgnScan25SettingsEditor
 import org.qnga.trekarta.maps.ui.maps.MapSettingsEditor
 import org.qnga.trekarta.maps.ui.maps.SpainIgnMtnSettingsEditor
+import org.qnga.trekarta.maps.ui.screens.CustomMapSelectionListener
+import org.qnga.trekarta.maps.ui.screens.CustomMapSelectionScreen
 import org.qnga.trekarta.maps.ui.screens.LoadingScreen
 import org.qnga.trekarta.maps.ui.screens.MapRegistryListener
 import org.qnga.trekarta.maps.ui.screens.MapRegistryScreen
@@ -112,6 +114,16 @@ internal sealed class Screen {
     @Composable
     override fun Screen() {
       MapDetailsScreen(settingsEditor, listener)
+    }
+  }
+
+  class CustomMapSelection(
+    private val listener: CustomMapSelectionListener
+  ) : Screen() {
+
+    @Composable
+    override fun Screen() {
+      CustomMapSelectionScreen(listener)
     }
   }
 }

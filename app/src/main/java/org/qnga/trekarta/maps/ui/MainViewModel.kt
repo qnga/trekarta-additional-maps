@@ -13,6 +13,7 @@ import org.qnga.trekarta.maps.core.maps.MapSettings
 import org.qnga.trekarta.maps.ui.maps.CustomWmtsKvpSettingsEditor
 import org.qnga.trekarta.maps.ui.navigation.Backstack
 import org.qnga.trekarta.maps.ui.navigation.Screen
+import org.qnga.trekarta.maps.ui.screens.CustomMapSelectionListener
 import org.qnga.trekarta.maps.ui.screens.MapDetailsListener
 import org.qnga.trekarta.maps.ui.screens.MapRegistryListener
 import org.qnga.trekarta.maps.ui.screens.UserMapsListener
@@ -67,8 +68,8 @@ internal class MainViewModel(
         }
 
         override fun onCustomMapSelected() {
-            val customMapScreen = Screen.MapDetails(CustomWmtsKvpSettingsEditor(), mapDetailsListener)
-            backstack.add(customMapScreen)
+            val customMapSelectionScreen = Screen.CustomMapSelection(customMapSelectionListener)
+            backstack.add(customMapSelectionScreen)
         }
     }
 
@@ -94,6 +95,17 @@ internal class MainViewModel(
         override fun onDeleteClicked(settings: MapSettings) {
             mapRepository.removeMap(settings)
             backstack.pop()
+        }
+
+        override fun onBackClicked() {
+            backstack.pop()
+        }
+    }
+
+    private val customMapSelectionListener = object : CustomMapSelectionListener {
+        override fun onWmtsKvpSelected() {
+            val customMapScreen = Screen.MapDetails(CustomWmtsKvpSettingsEditor(), mapDetailsListener)
+            backstack.add(customMapScreen)
         }
 
         override fun onBackClicked() {

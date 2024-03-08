@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import org.qnga.trekarta.maps.MainApplication
 import org.qnga.trekarta.maps.ui.theme.TrekartaAdditionalMaps
 
-
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels(factoryProducer = {

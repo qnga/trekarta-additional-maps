@@ -14,7 +14,7 @@ class MainApplication : Application() {
      * This is useful because ContentProvider.onCreate is called
      * before Application.onCreate has finished.
      */
-    val onCreatedCompleted: StateFlow<Boolean>
+    val onCreateCompleted: StateFlow<Boolean>
         get() = onCreateCompletedMutable
 
     private val onCreateCompletedMutable: MutableStateFlow<Boolean> =
@@ -22,8 +22,8 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        mapRepository = MapRepository(AppDatabase.get(this).mapDao())
+        val database = AppDatabase.get(this)
+        mapRepository = MapRepository(database.mapDao())
         onCreateCompletedMutable.value = true
     }
 }

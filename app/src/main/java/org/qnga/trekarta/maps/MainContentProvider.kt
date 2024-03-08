@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
@@ -32,7 +31,7 @@ class MainContentProvider : ContentProvider() {
         val application =
             requireNotNull(context).applicationContext as MainApplication
 
-        application.onCreatedCompleted
+        application.onCreateCompleted
             .filter { it }
             .flatMapLatest { application.mapRepository.userMaps }
             .onEach { queryHandler.emit(it.toQueryHandler()) }

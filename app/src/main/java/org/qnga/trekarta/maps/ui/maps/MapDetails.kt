@@ -162,7 +162,7 @@ private fun BritainOsOutdoorDetailsForm(
     ) {
         TokenForm(
             modifier = Modifier.padding(5.dp),
-            label = "API key",
+            label = "API Key",
             token = settingsEditor.token
         )
     }
@@ -177,7 +177,7 @@ private fun BritainOsRoadDetailsForm(
     ) {
         TokenForm(
             modifier = Modifier.padding(5.dp),
-            label = "API key",
+            label = "API Key",
             token = settingsEditor.token
         )
     }

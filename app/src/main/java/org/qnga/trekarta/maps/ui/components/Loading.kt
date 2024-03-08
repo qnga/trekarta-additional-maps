@@ -1,4 +1,4 @@
-package org.qnga.trekarta.maps.ui.screens
+package org.qnga.trekarta.maps.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoadingScreen() {
+fun LoadingBox() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

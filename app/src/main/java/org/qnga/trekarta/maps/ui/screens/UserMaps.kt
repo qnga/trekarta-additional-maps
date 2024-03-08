@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,16 +27,27 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.retry
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.qnga.trekarta.maps.core.data.Map
+import org.qnga.trekarta.maps.ui.components.LoadingBox
+import org.qnga.trekarta.maps.ui.components.RetryBox
 import org.qnga.trekarta.maps.ui.components.TopBarTitle
 
 interface UserMapsListener {
@@ -49,10 +59,48 @@ interface UserMapsListener {
     fun onCustomMapSelected()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+sealed interface UserMapsScreenState {
+
+    data object Loading : UserMapsScreenState
+
+    data class Error(
+        val continuation: CancellableContinuation<Boolean>
+    ) : UserMapsScreenState
+
+    data class MapsAvailable(
+        val maps: List<Map>
+    ) : UserMapsScreenState
+}
+
 @Composable
 fun UserMapsScreen(
-    maps: StateFlow<List<Map>>,
+    maps: Flow<List<Map>>,
+    listener: UserMapsListener
+) {
+    val state: MutableState<UserMapsScreenState> =
+        remember { mutableStateOf(UserMapsScreenState.Loading) }
+
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+
+    LaunchedEffect(null) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            maps
+                .retry { suspendCancellableCoroutine { state.value = UserMapsScreenState.Error(it) } }
+                .onEach { state.value = UserMapsScreenState.MapsAvailable(it) }
+                .collect()
+        }
+    }
+
+    UserMapsScreen(
+        state = state,
+        listener = listener
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@Composable
+fun UserMapsScreen(
+    state: State<UserMapsScreenState>,
     listener: UserMapsListener
 ) {
     Scaffold(
@@ -87,25 +135,42 @@ fun UserMapsScreen(
             }
         }
     ) { innerPadding ->
-        UserMapList(
+        Box(
             modifier = Modifier.padding(innerPadding),
-            maps = maps.collectAsState(),
-            onMapActivated = listener::onMapActivated
-        )
+            propagateMinConstraints = true
+        ) {
+            when (val stateNow = state.value) {
+                is UserMapsScreenState.Error -> {
+                    RetryBox(
+                        message = "Active maps could not be loaded.",
+                        onRetry = { stateNow.continuation.resume(true, onCancellation = { }) }
+                    )
+                }
+                UserMapsScreenState.Loading -> {
+                    LoadingBox()
+                }
+                is UserMapsScreenState.MapsAvailable -> {
+                    UserMapList(
+                        maps = stateNow.maps,
+                        onMapActivated = listener::onMapActivated
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun UserMapList(
-    modifier: Modifier,
-    maps: State<List<Map>>,
+    modifier: Modifier = Modifier,
+    maps: List<Map>,
     onMapActivated: (Map) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
     ) {
             items(
-                items = maps.value,
+                items = maps,
                 key = { it.id }
             ) {
                 ProviderItem(

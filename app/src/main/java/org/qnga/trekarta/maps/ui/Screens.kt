@@ -1,8 +1,8 @@
-package org.qnga.trekarta.maps.ui.navigation
+package org.qnga.trekarta.maps.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import org.qnga.trekarta.maps.core.data.Map
 import org.qnga.trekarta.maps.core.maps.BritainOsOutdoorProvider
 import org.qnga.trekarta.maps.core.maps.BritainOsRoadProvider
@@ -19,32 +19,23 @@ import org.qnga.trekarta.maps.ui.maps.MapSettingsEditor
 import org.qnga.trekarta.maps.ui.maps.SpainIgnMtnSettingsEditor
 import org.qnga.trekarta.maps.ui.screens.CustomMapSelectionListener
 import org.qnga.trekarta.maps.ui.screens.CustomMapSelectionScreen
-import org.qnga.trekarta.maps.ui.screens.LoadingScreen
+import org.qnga.trekarta.maps.ui.screens.MapDetailsListener
+import org.qnga.trekarta.maps.ui.screens.MapDetailsScreen
 import org.qnga.trekarta.maps.ui.screens.MapRegistryListener
 import org.qnga.trekarta.maps.ui.screens.MapRegistryScreen
 import org.qnga.trekarta.maps.ui.screens.UserMapsListener
 import org.qnga.trekarta.maps.ui.screens.UserMapsScreen
-import org.qnga.trekarta.maps.ui.screens.MapDetailsListener
-import org.qnga.trekarta.maps.ui.screens.MapDetailsScreen
 
-internal sealed class Screen {
+internal sealed class Screens {
 
   @SuppressLint("NotConstructor")
   @Composable
   abstract fun Screen()
 
-  object Loading : Screen() {
-
-    @Composable
-    override fun Screen() {
-      LoadingScreen()
-    }
-  }
-
   class UserMaps(
-    private val maps: StateFlow<List<Map>>,
+    private val maps: Flow<List<Map>>,
     private val listener: UserMapsListener
-  ) : Screen() {
+  ) : Screens() {
 
     @Composable
     override fun Screen() {
@@ -53,9 +44,9 @@ internal sealed class Screen {
   }
 
   class MapRegistry(
-    private val providers: StateFlow<List<MapProvider>>,
+    private val providers: Flow<List<MapProvider>>,
     private val listener: MapRegistryListener
-  ) : Screen() {
+  ) : Screens() {
 
     @Composable
     override fun Screen() {
@@ -66,7 +57,7 @@ internal sealed class Screen {
   class MapDetails(
     private val settingsEditor: MapSettingsEditor,
     private val listener: MapDetailsListener
-  ) : Screen() {
+  ) : Screens() {
 
     constructor(
       mapProvider: MapProvider,
@@ -119,7 +110,7 @@ internal sealed class Screen {
 
   class CustomMapSelection(
     private val listener: CustomMapSelectionListener
-  ) : Screen() {
+  ) : Screens() {
 
     @Composable
     override fun Screen() {

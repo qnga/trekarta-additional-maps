@@ -1,4 +1,4 @@
-package org.qnga.trekarta.maps.ui.navigation
+package org.qnga.trekarta.maps.ui.util
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -123,24 +123,10 @@ class MapRepository(
                .filter { it.id !in usedIdentifiers  }
         }
 
-    fun addMap(settings: MapSettings) {
+    fun upsertMap(settings: MapSettings) {
         coroutineScope.launch {
             val mapEntity = settings.toMapEntity()
-            mapDao.insert(mapEntity)
-        }
-    }
-
-    fun replaceMap(settings: MapSettings) {
-        coroutineScope.launch {
-            val mapEntity = settings.toMapEntity()
-            mapDao.replace(mapEntity)
-        }
-    }
-
-    fun updateMap(settings: MapSettings) {
-        coroutineScope.launch {
-            val mapEntity = settings.toMapEntity()
-            mapDao.update(mapEntity)
+            mapDao.upsert(mapEntity)
         }
     }
 

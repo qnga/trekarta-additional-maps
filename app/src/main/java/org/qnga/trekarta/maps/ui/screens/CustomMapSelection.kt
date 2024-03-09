@@ -18,10 +18,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.qnga.trekarta.maps.ui.components.BackButton
 import org.qnga.trekarta.maps.ui.components.TopBarTitle
+import org.qnga.trekarta.maps.R
 
 interface CustomMapSelectionListener {
 
@@ -39,7 +41,7 @@ fun CustomMapSelectionScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { TopBarTitle("Add a custom map") },
+                title = { TopBarTitle(text = stringResource(R.string.custom_map_selection_title)) },
                 navigationIcon = { BackButton(onClick = { listener.onBackClicked() }) }
             )
         }
@@ -76,12 +78,11 @@ private fun WarningSection(
             Icons.Filled.Warning,
             modifier = Modifier.size(50.dp),
             alignment = Alignment.Center,
-            contentDescription = "Warning"
+            contentDescription = stringResource(R.string.custom_map_selection_warning_icon_content_description)
         )
 
         Text(
-            text = "Trekarta supporte seulement les cartes conformes à un certain nombre de conventions " +
-                    "largement répandues sur le Web et compatibles avec OpenStreetMap et Google Maps.",
+            text = stringResource(R.string.custom_map_selection_warning_text),
             textAlign = TextAlign.Justify
         )
     }
@@ -99,7 +100,7 @@ private fun ChoiceButtons(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         TextButton(onClick = onWmtsKvpSelected) {
-            Text("Add a WMTS map with KVP encoding")
+            Text(text = stringResource(R.string.custom_map_selection_add_wmts_kvp))
         }
     }
 }

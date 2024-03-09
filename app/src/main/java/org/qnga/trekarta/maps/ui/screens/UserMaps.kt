@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -45,6 +46,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.qnga.trekarta.maps.R
 import org.qnga.trekarta.maps.core.data.Map
 import org.qnga.trekarta.maps.ui.components.LoadingBox
 import org.qnga.trekarta.maps.ui.components.RetryBox
@@ -106,7 +108,11 @@ fun UserMapsScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CenterAlignedTopAppBar(title = { TopBarTitle(text = "Active maps") })
+            CenterAlignedTopAppBar(
+                title = {
+                    TopBarTitle(text = stringResource(R.string.user_maps_title))
+                }
+            )
         },
         floatingActionButton = {
             val showDialog = remember { mutableStateOf(false) }
@@ -131,7 +137,7 @@ fun UserMapsScreen(
                 onClick = { showDialog.value = true },
                 shape = CircleShape
             ) {
-                Icon(Icons.Filled.Add, "Add a map")
+                Icon(Icons.Filled.Add, stringResource(R.string.user_maps_add_content_description))
             }
         }
     ) { innerPadding ->
@@ -142,7 +148,7 @@ fun UserMapsScreen(
             when (val stateNow = state.value) {
                 is UserMapsScreenState.Error -> {
                     RetryBox(
-                        message = "Active maps could not be loaded.",
+                        message = stringResource(R.string.user_maps_error),
                         onRetry = { stateNow.continuation.resume(true, onCancellation = { }) }
                     )
                 }
@@ -166,9 +172,17 @@ private fun UserMapList(
     maps: List<Map>,
     onMapActivated: (Map) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
+    if (maps.isEmpty()) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = stringResource(R.string.user_maps_empty))
+        }
+    } else {
+        LazyColumn(
+            modifier = modifier
+        ) {
             items(
                 items = maps,
                 key = { it.id }
@@ -180,6 +194,7 @@ private fun UserMapList(
                 )
                 HorizontalDivider()
             }
+        }
     }
 }
 
@@ -196,7 +211,7 @@ private fun ProviderItem(
             .padding(15.dp),
         contentAlignment = Alignment.CenterStart
     ) {
-        Text(title)
+        Text(text = title)
     }
 }
 
@@ -222,11 +237,11 @@ private fun SelectMapSourceDialog(
                 verticalArrangement = Arrangement.spacedBy(25.dp)
             ) {
                 Button(onClick = onRegistrySelected) {
-                    Text(text = "Add from the registry")
+                    Text(text = stringResource(R.string.user_maps_select_source_registry))
                 }
 
                 TextButton(onClick = onCustomMapSelected) {
-                    Text("Add a custom map")
+                    Text(text = stringResource(R.string.user_maps_select_source_custom))
                 }
             }
         }

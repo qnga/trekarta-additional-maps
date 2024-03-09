@@ -14,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.qnga.trekarta.maps.R
 import org.qnga.trekarta.maps.core.maps.MapSettings
 import org.qnga.trekarta.maps.ui.components.BackButton
 import org.qnga.trekarta.maps.ui.components.CloseButton
@@ -145,7 +147,7 @@ private fun MapDetailsViewTopBar(
     onBackClicked: () -> Unit
 ) {
     CenterAlignedTopAppBar(
-        title = { TopBarTitle(text = "Edit map") },
+        title = { TopBarTitle(text = stringResource(R.string.map_details_edit_title)) },
         navigationIcon = { BackButton(onClick = onBackClicked) },
         actions = {
             DeleteButton(onClick = onDeleteClicked)
@@ -161,7 +163,7 @@ private fun MapDetailsEditTopBar(
     onCloseClicked: () -> Unit
 ) {
     CenterAlignedTopAppBar(
-        title = { TopBarTitle(text = "Edit map") },
+        title = { TopBarTitle(text = stringResource(R.string.map_details_edit_title)) },
         navigationIcon = {
             CloseButton(onClick = onCloseClicked)
                          },
@@ -182,7 +184,7 @@ private fun MapDetailsAddTopBar(
     onBackClicked: () -> Unit
 ) {
     CenterAlignedTopAppBar(
-        title = { TopBarTitle(text = "Add map") },
+        title = { TopBarTitle(text = stringResource(R.string.map_details_add_title)) },
         navigationIcon = {
             BackButton(onClick = onBackClicked)
         },
@@ -199,8 +201,8 @@ private fun MapDetailsAddTopBar(
 private fun ConfirmDialog(
     title: String,
     body: String,
-    confirmText: String = "Confirm",
-    cancelText: String = "Cancel",
+    confirmText: String = stringResource(R.string.dialog_confirm),
+    cancelText: String = stringResource(R.string.dialog_cancel),
     onConfirmation: () -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -231,9 +233,9 @@ private fun ConfirmRemoveDialog(
     onCancel: () -> Unit,
 ) {
     ConfirmDialog(
-        title = "Remove map?",
-        body = "Settings will be lost.",
-        confirmText = "Remove",
+        title = stringResource(R.string.map_details_confirm_remove_map_title),
+        body = stringResource(R.string.map_details_confirm_remove_map_body),
+        confirmText = stringResource(R.string.map_details_confirm_remove_map_confirm_text),
         onConfirmation = onConfirmation,
         onCancel = onCancel
     )
@@ -245,9 +247,9 @@ private fun ConfirmDiscardChangesDialog(
     onCancel: () -> Unit,
 ) {
     ConfirmDialog(
-        title = "Discard changes?",
-        body = "Settings will be restored to their last saved state.",
-        confirmText = "Discard",
+        title =  stringResource(R.string.map_details_confirm_discard_changes_title),
+        body =  stringResource(R.string.map_details_confirm_discard_changes_body),
+        confirmText =  stringResource(R.string.map_details_confirm_discard_changes_confirm_text),
         onConfirmation = onConfirmation,
         onCancel = onCancel
     )
@@ -259,9 +261,9 @@ private fun ConfirmAbandonDialog(
     onCancel: () -> Unit,
 ) {
     ConfirmDialog(
-        title = "Abandon?",
-        body = "The map will not be added.",
-        confirmText = "Abandon",
+        title = stringResource(R.string.map_details_confirm_abandon_add_map_title),
+        body = stringResource(R.string.map_details_confirm_abandon_add_map_body),
+        confirmText = stringResource(R.string.map_details_confirm_abandon_add_map_confirm_text),
         onConfirmation = onConfirmation,
         onCancel = onCancel
     )

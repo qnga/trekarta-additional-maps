@@ -75,7 +75,7 @@ private fun MapDetailsFormScaffold(
             sampleName?.let {
                 ImageAsset(
                     modifier = Modifier.size(200.dp),
-                    fileName = it,
+                    filename = it,
                     contentDescription = ""
                 )
             }

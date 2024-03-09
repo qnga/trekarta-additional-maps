@@ -1,4 +1,63 @@
 <resources>
+    <string name="authority" translatable="false">org.qnga.trekarta.maps</string>
+
     <string name="app_name">Trekarta Additional Maps</string>
-    <string name="authority">org.qnga.trekarta.maps</string>
+
+    <string name="topbar_back_content_description">Go back</string>
+    <string name="topbar_done_content_description">Done</string>
+    <string name="topbar_delete_content_description">Delete</string>
+    <string name="topbar_close_content_description">Close</string>
+
+    <string name="retrybox_retry">Retry</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
+
+    <string name="wmts_kvp_form_metadata">Metadata</string>
+    <string name="wmts_kvp_form_title">Title</string>
+    <string name="wmts_kvp_form_provider">Provider</string>
+    <string name="wmts_kvp_form_min_zoom">Min Zoom</string>
+    <string name="wmts_kvp_form_max_zoom">Max Zoom</string>
+    <string name="wmts_kvp_form_access">Access</string>
+    <string name="wmts_kvp_form_service_url">Service URL</string>
+    <string name="wmts_kvp_form_tilematrixset" translatable="false">TileMatrixSet</string>
+    <string name="wmts_kvp_form_layer" translatable="false">Layer</string>
+    <string name="wmts_kvp_form_style" translatable="false">Style</string>
+    <string name="wmts_kvp_form_format" translatable="false">Format</string>
+    <string name="wmts_kvp_form_additional_parameters">Additional parameters</string>
+    <string name="wmts_kvp_form_add_parameter_content_description">Add</string>
+    <string name="wmts_kvp_form_remove_parameter_content_description">Remove</string>
+    <string name="wmts_kvp_form_parameter_key">Key</string>
+    <string name="wmts_kvp_form_parameter_value">Value</string>
+
+    <string name="custom_map_selection_title">Add a custom map</string>
+    <string name="custom_map_selection_warning_icon_content_description">Warning</string>
+    <string name="custom_map_selection_add_wmts_kvp">Add a WMTS map with KVP encoding</string>
+    <string name="custom_map_selection_warning_text">Trekarta only supports maps complying with a few widely spread conventions: basically, they must be compatible with OpenStreetMap and Google Maps."</string>
+
+    <string name="map_details_edit_title">Edit map</string>
+    <string name="map_details_add_title">Add map</string>
+
+    <string name="map_details_confirm_remove_map_title">Remove map?</string>
+    <string name="map_details_confirm_remove_map_body">Settings will be lost.</string>
+    <string name="map_details_confirm_remove_map_confirm_text">Remove</string>
+
+    <string name="map_details_confirm_discard_changes_title">Discard changes?</string>
+    <string name="map_details_confirm_discard_changes_body">Settings will be restored to their last saved state.</string>
+    <string name="map_details_confirm_discard_changes_confirm_text">Discard</string>
+
+    <string name="map_details_confirm_abandon_add_map_title">Abandon?</string>
+    <string name="map_details_confirm_abandon_add_map_body">The map will not be added.</string>
+    <string name="map_details_confirm_abandon_add_map_confirm_text">Abandon</string>
+
+    <string name="map_registry_title">Choose map</string>
+    <string name="map_registry_error">Available maps could not be loaded.</string>
+    <string name="map_registry_empty">You have already added all registry maps.</string>
+
+    <string name="user_maps_title">Active maps</string>
+    <string name="user_maps_error">Active maps could not be loaded.</string>
+    <string name="user_maps_empty">You haven\'t added any map yet.</string>
+    <string name="user_maps_add_content_description">Add a map</string>
+
+    <string name="user_maps_select_source_registry">Add from the registry</string>
+    <string name="user_maps_select_source_custom">Add a custom map</string>
 </resources>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cartes supplémentaires pour Trekarta</string>
+
+    <string name="topbar_back_content_description">Retour</string>
+    <string name="topbar_done_content_description">Valider</string>
+    <string name="topbar_delete_content_description">Supprimer</string>
+    <string name="topbar_close_content_description">Fermer</string>
+
+    <string name="retrybox_retry">Réessayer</string>
+    <string name="dialog_confirm">Confirmer</string>
+    <string name="dialog_cancel">Annuler</string>
+
+    <string name="wmts_kvp_form_metadata">Métadonnées</string>
+    <string name="wmts_kvp_form_title">Titre</string>
+    <string name="wmts_kvp_form_provider">Fournisseur</string>
+    <string name="wmts_kvp_form_min_zoom">Zoom minimal</string>
+    <string name="wmts_kvp_form_max_zoom">Zoom maximal</string>
+    <string name="wmts_kvp_form_access">Accès</string>
+    <string name="wmts_kvp_form_service_url">URL du service</string>
+    <string name="wmts_kvp_form_additional_parameters">Paramètres  supplémentaires</string>
+    <string name="wmts_kvp_form_add_parameter_content_description">Ajouter</string>
+    <string name="wmts_kvp_form_remove_parameter_content_description">Supprimer</string>
+    <string name="wmts_kvp_form_parameter_key">Clé</string>
+    <string name="wmts_kvp_form_parameter_value">Valeur</string>
+
+    <string name="custom_map_selection_title">Ajouter une carte personnalisée</string>
+    <string name="custom_map_selection_warning_icon_content_description">Attention</string>
+    <string name="custom_map_selection_add_wmts_kvp">Ajouter une carte WMTS avec encodage KVP</string>
+    <string name="custom_map_selection_warning_text">Trekarta supporte seulement les cartes conformes à un certain nombre de conventionslargement répandues sur le Web et compatibles avec OpenStreetMap et Google Maps."</string>
+
+    <string name="map_details_edit_title">Modifier la carte</string>
+    <string name="map_details_add_title">Ajouter une carte</string>
+
+    <string name="map_details_confirm_remove_map_title">Supprimer la carte ?</string>
+    <string name="map_details_confirm_remove_map_body">Les paramètres seront perdus.</string>
+    <string name="map_details_confirm_remove_map_confirm_text">Supprimer</string>
+
+    <string name="map_details_confirm_discard_changes_title">Annuler les modifications ?</string>
+    <string name="map_details_confirm_discard_changes_body">Les paramètres précédents seront restaurés.</string>
+    <string name="map_details_confirm_discard_changes_confirm_text">Confirmer</string>
+
+    <string name="map_details_confirm_abandon_add_map_title">Abandonner ?</string>
+    <string name="map_details_confirm_abandon_add_map_body">La carte ne sera pas ajoutée.</string>
+    <string name="map_details_confirm_abandon_add_map_confirm_text">Abandonner</string>
+
+    <string name="map_registry_title">Choisissez une carte</string>
+    <string name="map_registry_error">Les cartes disponibles n\'ont pas pu être chargées.</string>
+    <string name="map_registry_empty">Vous avez déjà ajouté toutes les cartes du registre.</string>
+
+    <string name="user_maps_title">Cartes actives</string>
+    <string name="user_maps_error">Les cartes actives n\'ont pas pu être chargées.</string>
+    <string name="user_maps_empty">Vous n\'avez encore ajouté aucune carte.</string>
+    <string name="user_maps_add_content_description">Ajouter une carte</string>
+
+    <string name="user_maps_select_source_registry">Ajouter une carte du registre</string>
+    <string name="user_maps_select_source_custom">Ajouter une carte manuellement</string>
+</resources>

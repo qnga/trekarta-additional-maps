@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.qnga.trekarta.maps.R
 import org.qnga.trekarta.maps.core.maps.MapProvider
 import org.qnga.trekarta.maps.ui.components.BackButton
 import org.qnga.trekarta.maps.ui.components.LoadingBox
@@ -94,20 +96,22 @@ fun MapRegistryScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { TopBarTitle("Choose map") },
+                title = { TopBarTitle(text = stringResource(R.string.map_registry_title)) },
                 navigationIcon = { BackButton(onClick = { listener.onBackClicked() }) }
             )
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
         ) {
             HorizontalDivider(thickness = 3.dp)
 
             when (val stateNow = state.value) {
                 is MapRegistryScreenState.Error -> {
                     RetryBox(
-                        message = "Available maps could not be loaded.",
+                        message = stringResource(R.string.map_registry_error),
                         onRetry = { stateNow.continuation.resume(true, onCancellation = { }) }
                     )
                 }
@@ -133,10 +137,10 @@ private fun MapProviderList(
 ) {
     if (providers.isEmpty()) {
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            Text(text = "You have already enabled all available maps.")
+            Text(text = stringResource(R.string.map_registry_empty))
         }
     } else {
         LazyColumn(

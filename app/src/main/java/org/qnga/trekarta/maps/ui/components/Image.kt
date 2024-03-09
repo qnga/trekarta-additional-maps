@@ -1,7 +1,6 @@
 package org.qnga.trekarta.maps.ui.components
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,19 +11,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import org.qnga.trekarta.maps.ui.util.decodeAssetBitmap
 
 @Composable
 fun ImageAsset(
     modifier: Modifier = Modifier,
-    fileName: String,
+    filename: String,
     contentDescription: String,
 
-) {
+    ) {
     var bitmapState by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        bitmapState = BitmapFactory.decodeStream(context.assets.open(fileName))
+        bitmapState = context.decodeAssetBitmap(filename).getOrNull()
     }
 
     if (null != bitmapState) {

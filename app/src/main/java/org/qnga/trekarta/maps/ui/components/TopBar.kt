@@ -4,12 +4,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import org.qnga.trekarta.maps.R
 
 @Composable
 fun TopBarTitle(
@@ -20,10 +22,6 @@ fun TopBarTitle(
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
-}
-@Composable
-fun AppNameTitle() {
-    TopBarTitle(text = "Trekarta Additional Maps")
 }
 
 @Composable
@@ -36,8 +34,8 @@ fun BackButton(
         onClick = onClick
     ) {
         Icon(
-            imageVector = Icons.Filled.ArrowBack,
-            contentDescription = "Go back"
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.topbar_back_content_description)
         )
     }
 }
@@ -53,7 +51,7 @@ fun DoneButton(
     ) {
         Icon(
             imageVector = Icons.Filled.Done,
-            contentDescription = "Done"
+            contentDescription = stringResource(R.string.topbar_done_content_description)
         )
     }
 }
@@ -69,7 +67,7 @@ fun DeleteButton(
     ) {
         Icon(
             imageVector = Icons.Filled.Delete,
-            contentDescription = "Delete"
+            contentDescription = stringResource(R.string.topbar_delete_content_description)
         )
     }
 }
@@ -85,7 +83,7 @@ fun CloseButton(
     ) {
         Icon(
             imageVector = Icons.Filled.Close,
-            contentDescription = "Close"
+            contentDescription = stringResource(R.string.topbar_close_content_description)
         )
     }
 }

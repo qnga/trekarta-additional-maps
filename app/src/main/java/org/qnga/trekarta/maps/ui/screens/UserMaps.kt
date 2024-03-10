@@ -232,7 +232,7 @@ private fun SelectMapSourceDialog(
             tonalElevation = AlertDialogDefaults.TonalElevation,
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 40.dp),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(25.dp)
             ) {

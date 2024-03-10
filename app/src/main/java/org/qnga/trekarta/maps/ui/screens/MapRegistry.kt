@@ -106,8 +106,6 @@ fun MapRegistryScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            HorizontalDivider(thickness = 3.dp)
-
             when (val stateNow = state.value) {
                 is MapRegistryScreenState.Error -> {
                     RetryBox(

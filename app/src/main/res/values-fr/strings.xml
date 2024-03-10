@@ -27,7 +27,7 @@
     <string name="custom_map_selection_title">Ajouter une carte personnalisée</string>
     <string name="custom_map_selection_warning_icon_content_description">Attention</string>
     <string name="custom_map_selection_add_wmts_kvp">Ajouter une carte WMTS avec encodage KVP</string>
-    <string name="custom_map_selection_warning_text">Trekarta supporte seulement les cartes conformes à un certain nombre de conventionslargement répandues sur le Web et compatibles avec OpenStreetMap et Google Maps."</string>
+    <string name="custom_map_selection_warning_text">Trekarta supporte seulement les cartes conformes à un certain nombre de conventions largement répandues sur le Web et compatibles avec OpenStreetMap et Google Maps."</string>
 
     <string name="map_details_edit_title">Modifier la carte</string>
     <string name="map_details_add_title">Ajouter une carte</string>
@@ -42,7 +42,7 @@
 
     <string name="map_details_confirm_abandon_add_map_title">Abandonner ?</string>
     <string name="map_details_confirm_abandon_add_map_body">La carte ne sera pas ajoutée.</string>
-    <string name="map_details_confirm_abandon_add_map_confirm_text">Abandonner</string>
+    <string name="map_details_confirm_abandon_add_map_confirm_text">Confirmer</string>
 
     <string name="map_registry_title">Choisissez une carte</string>
     <string name="map_registry_error">Les cartes disponibles n\'ont pas pu être chargées.</string>

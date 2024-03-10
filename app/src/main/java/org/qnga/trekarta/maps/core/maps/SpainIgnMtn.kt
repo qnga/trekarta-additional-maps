@@ -18,7 +18,7 @@ object SpainIgnMtnProvider : MapProvider {
 
 
     @Serializable
-    @SerialName("SpainIgnMtn")
+    @SerialName("SpainIgnMtnSettings")
     data object Settings : MapSettings
 
     fun createHandler(): Handler =

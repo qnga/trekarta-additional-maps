@@ -1,9 +1,11 @@
 package org.qnga.trekarta.maps.core.maps
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
 @Serializable
+@SerialName("WmtsKvpSettings")
 data class CustomWmtsKvpSettings(
     val id: String = UUID.randomUUID().toString(),
     val title: String,

@@ -1,5 +1,6 @@
 package org.qnga.trekarta.maps.core.maps
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.qnga.trekarta.maps.core.handlers.Handler
 import org.qnga.trekarta.maps.core.handlers.WmtsKvpHandler
@@ -16,6 +17,7 @@ object FranceIgnScan25Provider : MapProvider {
         "Institut géographique national"
 
     @Serializable
+    @SerialName("FranceIgnScan25Settings")
     data class Settings(
         val accessToken: String
     ) : MapSettings

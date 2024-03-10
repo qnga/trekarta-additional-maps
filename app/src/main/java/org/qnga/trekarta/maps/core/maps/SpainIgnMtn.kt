@@ -1,5 +1,6 @@
 package org.qnga.trekarta.maps.core.maps
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.qnga.trekarta.maps.core.handlers.Handler
 import org.qnga.trekarta.maps.core.handlers.WmtsKvpHandler
@@ -17,6 +18,7 @@ object SpainIgnMtnProvider : MapProvider {
 
 
     @Serializable
+    @SerialName("SpainIgnMtn")
     data object Settings : MapSettings
 
     fun createHandler(): Handler =
